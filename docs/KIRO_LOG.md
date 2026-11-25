@@ -131,3 +131,11 @@ Kiro is out of monthly credits, so Claude Code implemented the following inside 
   - `.kiro/settings/mcp.json` (Firebase, Playwright, GitHub; no tokens in the file).
 
   The secret guard reads `USER_PROMPT`, which Kiro sets for prompt hooks, and exits 2 on a real key. It was tested from the shell.
+
+## 2026-11-26 - Benchmark, CSP, README, e2e (implemented with Claude Code)
+
+- `/bench` now runs a real seeded benchmark: emails, chats, code, medical notes and contracts with planted fictional secrets, across 3 configurations. Kiro's page had hard-coded example percentages, which were removed. Rules-only result for seed 2026, 60 documents: 224 of 369 planted values leaked. Every structured type was caught; the contextual types need Nano.
+- The CSP `connect-src` now lists the exact hosts the installed SDKs call, with no wildcards.
+- The README covers the AI Logic code pointers, a Mermaid architecture diagram, the tested guarantees and the setup steps.
+- 4 Playwright e2e tests pass in Chrome.
+- Copy fixes against the design rules: emoji icons replaced with step numbers, and inaccurate privacy claims corrected.

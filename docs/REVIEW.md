@@ -33,28 +33,30 @@ Findings from a review of the setup on 2026-11-25. Fix each one in the spec name
 4. **Lint:** `eslint` is installed but has no `eslint.config.js`, so `npm run lint` fails. Add a flat config (typescript-eslint, react-hooks) and Prettier.
 5. **Before submitting:** delete `SETUP_COMPLETE.md` (a scaffolding note), and replace "Architecture diagram coming soon" in the README with the real diagram.
 
-## Resume here (2026-11-25, paused)
+## Resume here (updated 2026-11-26)
 
-**State.** Steering and setup only. No specs, hooks, agents or MCP yet, and no real features. `npm run build` passes. `npm run lint` fails with 256 errors (probably because it lints the built `dist/` folders; fix in the skeleton spec). Each steering file has a duplicate second front-matter block (`loadMode: ...`); keep only the `inclusion:` block. Kiro's chat in the airlock window is set to **Supervised**, Claude Sonnet 4.5. In the Kiro editor, `docs/REVIEW.md` had unsaved edits that never reached disk. Discard them, or check them before saving.
+**State: feature-complete for the Firebase submission. Everything is green and pushed to origin/main:**
+- `npm run typecheck`, `lint` and `build`
+- `npm run test:unit`: 78 tests, including the 9 PBT properties at 1,000 runs each
+- `npm run test:rules`: 15 emulator tests
+- `npx playwright test`: 4 e2e tests in Chrome
 
-**Blocker: Kiro credits.** The status bar showed "Kiro Free 17.63 / 50", and that pool is shared with Here Lies. The full plan (skeleton, tooling, then 6 specs with PBT) needs well over 100 credits. Safal has to choose: (a) upgrade Kiro and run the full plan, or (b) a ~20-credit budget for Airlock (skeleton, scrub-engine and tooling files), with the rest written by Claude Code and logged honestly. Send no Kiro prompts until that's decided.
+Kiro's monthly credits are used up ("You've reached your monthly usage limit"). Kiro authored the steering, the architecture-skeleton spec and code, the frontend, and the scrub-engine spec. Claude Code implemented the rest inside Kiro's stubs; see KIRO_LOG.md and the list below.
 
-**Next Kiro prompt (new Feature spec, name `architecture-skeleton`):**
-```
-Spec name: architecture-skeleton. Source: #brief (docs/BRIEF.md, all sections; never edit or shorten it) plus docs/REVIEW.md.
+**Safal must do these (Claude was told not to touch the account, deploy or set secrets):**
+1. Firebase console, project `airlock-app`:
+   - Add a **Web app** (none exists yet). Copy its config into `apps/web/.env.local` (gitignored), using `.env.example` for the variable names.
+   - Enable **AI Logic** with the **Gemini Developer API**.
+   - Enable **App Check** with reCAPTCHA v3: create a site key, put it in `VITE_RECAPTCHA_SITE_KEY`, and set AI Logic to **Enforced**. Run `npm run dev` once, copy the App Check debug token printed in the browser console, and register it in the console (never commit it).
+   - Enable **Authentication > Google**, and create **Firestore** (production mode). Optionally create Remote Config parameters matching `REMOTE_CONFIG_DEFAULTS` in `apps/web/src/firebase/remoteConfig.ts`.
+2. In Chrome 158, check `chrome://flags/#prompt-api-for-gemini-nano-multimodal-input` is Enabled. Open `/chat` and confirm "On-device protection is ready". Then:
+   - Send an HR-style message and check the receipt shows `detection: ON_DEVICE` and `answer: IN_CLOUD`.
+   - Send a short rewrite and check it answers on the device.
+3. Run `/bench` with Nano on, download the JSON, and paste the Rules + Nano row into the README benchmark table.
+4. Deploy: `npm run build`, then `firebase deploy --only hosting,firestore:rules` (run by Safal). Add the hosted URL to the README and to the Devpost entry, and tag `firebase-submission`.
+5. Record the video (BRIEF §13) and submit before **Dec 1, 3:30 AM IST**.
 
-Goal: create EVERY planned file of the app as a wired, type-correct skeleton before any feature logic. Bodies are stubs (throw new Error("not implemented: <spec>") or return typed placeholders), but every file gets its real exported types, interfaces and signatures, and a doc comment per function describing the logic it will implement (cite the BRIEF section).
-
-Cover:
-- packages/scrub-engine: types, rule detectors (one per 8.1 category), Verhoeff/Luhn/entropy helpers, merge (Layer C), policy + resolution order (8.3), stand-in generator + pools (8.2), restore + streaming buffer (8.5), Detector interface for Layer B, vault interface, bin/check-prompt.mjs entry.
-- packages/nano-detector: availability, user-gesture init with progress, structured detection (exact 8.1 JSON schema, zod), span resolution, chunking, task classification (8.4). Check option names against the installed firebase/ai typings (InferenceMode, onDeviceParams, inCloudParams, inferenceSource, initializeDeviceModel).
-- apps/web: src/firebase (init, appCheck, remoteConfig with every 9.3 key and default, auth, firestore), hybrid router (8.4 decision table), vault (IndexedDB + AES-GCM non-extractable key, TTL, forget), receipts store, and the full React component tree with props for every route in 10.1, including AirlockChamber. Presentational components hold no logic; logic lives in hooks/services.
-- firestore.rules + data model types for 9.2 (fold in REVIEW.md item 1), firebase.json CSP (item 2).
-- Fix lint (ignore dist/, build output, *.tsbuildinfo; add *.tsbuildinfo to .gitignore) and remove the duplicate loadMode front-matter blocks in .kiro/steering.
-
-Done when: every BRIEF feature has a home and nothing is orphaned; npm run typecheck, npm run lint and npm run build all pass; tests pass with no tests yet. Write requirements (EARS) first; I will review before design.
-```
-After that: tooling (A4–A6 in `_planning/kiro-kickoff.md`), then specs scrub-engine, nano-detector, hybrid-router, vault, firebase-platform, airlock-chat.
+**Next, if Kiro credits return:** let Kiro restyle the screens Claude had to extend (org editors, receipt diff, bench table, consent toggle). Then run the `copy-editor` and `leak-auditor` agents, and screenshot the secret-guard hook blocking a key, for the Kiroween write-up.
 
 ## Claude-authored code (Kiro out of credits, 2026-11-26)
 Kiro's free monthly credits ran out after the architecture-skeleton spec, the frontend, and the scrub-engine spec documents. From that point Claude Code implements the remaining logic inside Kiro's stubs, following Kiro's design documents. Each part is logged in KIRO_LOG.md as "implemented with Claude Code":
@@ -63,5 +65,8 @@ Kiro's free monthly credits ran out after the architecture-skeleton spec, the fr
 - [x] firestore.rules rewrite + 15 emulator tests (REVIEW item 1 done)
 - [x] Kiro hooks, agents and mcp.json (REVIEW item 3 done; files written by Claude Code to Kiro's schema)
 - [x] CSP (REVIEW item 2): connect-src lists the exact endpoints the installed SDKs call (AI Logic firebasevertexai, App Check, Installations, Remote Config, Firestore, Auth), reCAPTCHA script/frame domains added, fonts self-hosted via @fontsource, no wildcards, no unsafe-eval
-- [x] Lint config (REVIEW item 4 done); SETUP_COMPLETE.md removed (item 5, first half)
+- [x] Lint config (REVIEW item 4 done); SETUP_COMPLETE.md removed and the README architecture diagram written (item 5 done)
+- [x] Leak benchmark: replaced Kiro's hard-coded demo numbers with a real seeded run
+- [x] Copy fixes: removed emoji icons (banned by the design rules) and corrected inaccurate privacy and how-it-works claims
+- [x] E2E: 4 Playwright tests (reduced protection, withheld secret, clipboard round trip + receipt, benchmark)
 - Design deviation, recorded here: Layer C merges overlapping findings into their union span instead of dropping the loser, and secret categories always win. This came from a shrunk PBT counterexample in which a partly overlapped card number leaked.
