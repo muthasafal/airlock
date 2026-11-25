@@ -62,5 +62,6 @@ Kiro's free monthly credits ran out after the architecture-skeleton spec, the fr
 - [x] nano-detector, web pipeline (vault, receipts, router, cloud client, session), org mode, wiring Kiro's pages
 - [x] firestore.rules rewrite + 15 emulator tests (REVIEW item 1 done)
 - [x] Kiro hooks, agents and mcp.json (REVIEW item 3 done; files written by Claude Code to Kiro's schema)
+- [x] CSP (REVIEW item 2): connect-src lists the exact endpoints the installed SDKs call (AI Logic firebasevertexai, App Check, Installations, Remote Config, Firestore, Auth), reCAPTCHA script/frame domains added, fonts self-hosted via @fontsource, no wildcards, no unsafe-eval
 - [x] Lint config (REVIEW item 4 done); SETUP_COMPLETE.md removed (item 5, first half)
 - Design deviation, recorded here: Layer C merges overlapping findings into their union span instead of dropping the loser, and secret categories always win. This came from a shrunk PBT counterexample in which a partly overlapped card number leaked.

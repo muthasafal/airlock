@@ -18,7 +18,7 @@
         "headers": [
           {
             "key": "Content-Security-Policy",
-            "value": "default-src 'self'; script-src 'self' https://www.google.com https://www.gstatic.com; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self' https://*.googleapis.com https://*.firebase.googleapis.com https://firebaseinstallations.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com; img-src 'self' data: https:; frame-src https://www.google.com https://recaptcha.google.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+            "value": "default-src 'self'; script-src 'self' https://www.google.com https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://firebasevertexai.googleapis.com https://content-firebaseappcheck.googleapis.com https://firebaseinstallations.googleapis.com https://firebaseremoteconfig.googleapis.com https://firebaseremoteconfigrealtime.googleapis.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.google.com; frame-src https://www.google.com https://recaptcha.google.com https://airlock-app.firebaseapp.com; worker-src 'self'; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
           },
           {
             "key": "X-Content-Type-Options",
@@ -34,7 +34,7 @@
           },
           {
             "key": "Permissions-Policy",
-            "value": "geolocation=(), microphone=(), camera=()"
+            "value": "geolocation=(), microphone=(), camera=(), payment=(), usb=(), clipboard-write=(self)"
           }
         ]
       }
