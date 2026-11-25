@@ -32,3 +32,26 @@ Findings from a review of the setup on 2026-11-25. Fix each one in the spec name
    These are judged for Kiroween.
 4. **Lint:** `eslint` is installed but has no `eslint.config.js`, so `npm run lint` fails. Add a flat config (typescript-eslint, react-hooks) and Prettier.
 5. **Before submitting:** delete `SETUP_COMPLETE.md` (a scaffolding note), and replace "Architecture diagram coming soon" in the README with the real diagram.
+
+## Resume here (2026-11-25, paused)
+
+**State.** Steering and setup only. No specs, hooks, agents or MCP yet, and no real features. `npm run build` passes. `npm run lint` fails with 256 errors (probably because it lints the built `dist/` folders; fix in the skeleton spec). Each steering file has a duplicate second front-matter block (`loadMode: ...`); keep only the `inclusion:` block. Kiro's chat in the airlock window is set to **Supervised**, Claude Sonnet 4.5. In the Kiro editor, `docs/REVIEW.md` had unsaved edits that never reached disk. Discard them, or check them before saving.
+
+**Blocker: Kiro credits.** The status bar showed "Kiro Free 17.63 / 50", and that pool is shared with Here Lies. The full plan (skeleton, tooling, then 6 specs with PBT) needs well over 100 credits. Safal has to choose: (a) upgrade Kiro and run the full plan, or (b) a ~20-credit budget for Airlock (skeleton, scrub-engine and tooling files), with the rest written by Claude Code and logged honestly. Send no Kiro prompts until that's decided.
+
+**Next Kiro prompt (new Feature spec, name `architecture-skeleton`):**
+```
+Spec name: architecture-skeleton. Source: #brief (docs/BRIEF.md, all sections; never edit or shorten it) plus docs/REVIEW.md.
+
+Goal: create EVERY planned file of the app as a wired, type-correct skeleton before any feature logic. Bodies are stubs (throw new Error("not implemented: <spec>") or return typed placeholders), but every file gets its real exported types, interfaces and signatures, and a doc comment per function describing the logic it will implement (cite the BRIEF section).
+
+Cover:
+- packages/scrub-engine: types, rule detectors (one per 8.1 category), Verhoeff/Luhn/entropy helpers, merge (Layer C), policy + resolution order (8.3), stand-in generator + pools (8.2), restore + streaming buffer (8.5), Detector interface for Layer B, vault interface, bin/check-prompt.mjs entry.
+- packages/nano-detector: availability, user-gesture init with progress, structured detection (exact 8.1 JSON schema, zod), span resolution, chunking, task classification (8.4). Check option names against the installed firebase/ai typings (InferenceMode, onDeviceParams, inCloudParams, inferenceSource, initializeDeviceModel).
+- apps/web: src/firebase (init, appCheck, remoteConfig with every 9.3 key and default, auth, firestore), hybrid router (8.4 decision table), vault (IndexedDB + AES-GCM non-extractable key, TTL, forget), receipts store, and the full React component tree with props for every route in 10.1, including AirlockChamber. Presentational components hold no logic; logic lives in hooks/services.
+- firestore.rules + data model types for 9.2 (fold in REVIEW.md item 1), firebase.json CSP (item 2).
+- Fix lint (ignore dist/, build output, *.tsbuildinfo; add *.tsbuildinfo to .gitignore) and remove the duplicate loadMode front-matter blocks in .kiro/steering.
+
+Done when: every BRIEF feature has a home and nothing is orphaned; npm run typecheck, npm run lint and npm run build all pass; tests pass with no tests yet. Write requirements (EARS) first; I will review before design.
+```
+After that: tooling (A4–A6 in `_planning/kiro-kickoff.md`), then specs scrub-engine, nano-detector, hybrid-router, vault, firebase-platform, airlock-chat.
