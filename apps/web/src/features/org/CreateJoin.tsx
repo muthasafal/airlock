@@ -2,29 +2,16 @@ import React, { useState } from 'react';
 import './CreateJoin.css';
 
 interface CreateJoinProps {
-  onJoined: () => void;
+  onCreate: (name: string) => void;
+  onJoin: (orgId: string, inviteCode: string) => void;
 }
 
-export default function CreateJoin({ onJoined }: CreateJoinProps): React.JSX.Element {
+/** Create an org (you become its admin) or join one with its ID and invite code. BRIEF §P1-1. */
+export default function CreateJoin({ onCreate, onJoin }: CreateJoinProps): React.JSX.Element {
   const [mode, setMode] = useState<'choice' | 'create' | 'join'>('choice');
   const [orgName, setOrgName] = useState('');
+  const [orgId, setOrgId] = useState('');
   const [inviteCode, setInviteCode] = useState('');
-
-  const handleCreate = () => {
-    if (orgName.trim()) {
-      // TODO(create-join): call Firebase org creation
-      alert(`TODO: Create org "${orgName}"`);
-      onJoined();
-    }
-  };
-
-  const handleJoin = () => {
-    if (inviteCode.trim()) {
-      // TODO(create-join): call Firebase org join
-      alert(`TODO: Join org with code "${inviteCode}"`);
-      onJoined();
-    }
-  };
 
   return (
     <div className="create-join">
@@ -41,15 +28,10 @@ export default function CreateJoin({ onJoined }: CreateJoinProps): React.JSX.Ele
 
       {mode === 'create' && (
         <div className="create-join-form">
-          <label>Organization name:</label>
-          <input
-            type="text"
-            value={orgName}
-            onChange={(e) => setOrgName(e.target.value)}
-            placeholder="e.g. Acme Corp"
-          />
+          <label htmlFor="org-name">Organization name:</label>
+          <input id="org-name" type="text" value={orgName} onChange={(e) => setOrgName(e.target.value)} placeholder="e.g. Northwind Labs" />
           <div className="create-join-actions">
-            <button className="create-join-submit" onClick={handleCreate} disabled={!orgName.trim()}>
+            <button className="create-join-submit" onClick={() => onCreate(orgName)} disabled={!orgName.trim()}>
               Create
             </button>
             <button className="create-join-cancel" onClick={() => setMode('choice')}>
@@ -61,15 +43,12 @@ export default function CreateJoin({ onJoined }: CreateJoinProps): React.JSX.Ele
 
       {mode === 'join' && (
         <div className="create-join-form">
-          <label>Invite code:</label>
-          <input
-            type="text"
-            value={inviteCode}
-            onChange={(e) => setInviteCode(e.target.value)}
-            placeholder="Paste the code your admin shared"
-          />
+          <label htmlFor="org-id">Org ID:</label>
+          <input id="org-id" type="text" value={orgId} onChange={(e) => setOrgId(e.target.value)} placeholder="From your admin" />
+          <label htmlFor="org-code">Invite code:</label>
+          <input id="org-code" type="text" value={inviteCode} onChange={(e) => setInviteCode(e.target.value)} placeholder="Paste the code your admin shared" />
           <div className="create-join-actions">
-            <button className="create-join-submit" onClick={handleJoin} disabled={!inviteCode.trim()}>
+            <button className="create-join-submit" onClick={() => onJoin(orgId, inviteCode)} disabled={!orgId.trim() || !inviteCode.trim()}>
               Join
             </button>
             <button className="create-join-cancel" onClick={() => setMode('choice')}>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { EASING, DURATION_NORMAL } from '../../lib/motion';
+import EnableNanoButton from './EnableNanoButton';
 import './ProtectionStatus.css';
 
 export type ProtectionLevel = 'full' | 'reduced' | 'unavailable';
@@ -8,26 +9,41 @@ export type ProtectionLevel = 'full' | 'reduced' | 'unavailable';
 interface ProtectionStatusProps {
   level: ProtectionLevel;
   downloadProgress?: number; // 0-100 for downloading state
+  availability?: 'available' | 'downloadable' | 'downloading' | 'unavailable';
+  firebaseConfigured?: boolean;
+  onEnable?: () => void;
+  enabling?: boolean;
+  consent?: boolean;
+  onConsentChange?: (v: boolean) => void;
 }
 
 /**
  * Shows protection status as plain text, never badge pills.
- * BRIEF §P0-9, design language (plain text status).
+ * BRIEF §P0-9, §10.4 copy, design language (plain text status).
  *
  * States:
  * - full: "On-device protection is ready"
- * - reduced: "Protection is reduced (rules only)" with consent toggle
- * - unavailable: "Not available on this browser" with flag guide
+ * - reduced: model downloadable or downloading, with the Enable button and progress
+ * - unavailable: "not available on this browser" with the flag guide and the consent toggle
  */
-export default function ProtectionStatus({ level, downloadProgress = 0 }: ProtectionStatusProps): React.JSX.Element {
+export default function ProtectionStatus({
+  level,
+  downloadProgress = 0,
+  availability,
+  firebaseConfigured = true,
+  onEnable,
+  enabling = false,
+  consent = false,
+  onConsentChange,
+}: ProtectionStatusProps): React.JSX.Element {
   return (
-    <div className={`protection-status protection-status--${level}`}>
+    <div className={`protection-status protection-status--${level}`} role="status" aria-live="polite">
       {level === 'full' && (
         <>
           <div className="protection-status-icon">✓</div>
           <div className="protection-status-text">
             <p className="protection-status-title">On-device protection is ready</p>
-            <p className="protection-status-description">Sensitive details are detected and replaced before anything leaves your device.</p>
+            <p className="protection-status-description">Your secrets stay on this laptop. Sensitive details are found and swapped before anything leaves.</p>
           </div>
         </>
       )}
@@ -36,9 +52,16 @@ export default function ProtectionStatus({ level, downloadProgress = 0 }: Protec
         <>
           <div className="protection-status-icon">⚠</div>
           <div className="protection-status-text">
-            <p className="protection-status-title">Protection is reduced</p>
-            <p className="protection-status-description">Using rules only. The on-device model is downloading or not available.</p>
-            <p className="protection-status-info">Cloud AI will be called, but you can limit to rules-only detection.</p>
+            <p className="protection-status-title">
+              {availability === 'downloading' || enabling
+                ? `On-device protection: downloading ${downloadProgress}%`
+                : 'On-device protection: ready to download'}
+            </p>
+            <p className="protection-status-description">
+              Until the private model is ready we use our rule checks only, and you'll be asked before anything is sent.
+            </p>
+            {onEnable && !enabling && availability === 'downloadable' && <EnableNanoButton onClick={onEnable} />}
+            {onConsentChange && <ConsentToggle consent={consent} onChange={onConsentChange} />}
           </div>
         </>
       )}
@@ -47,8 +70,12 @@ export default function ProtectionStatus({ level, downloadProgress = 0 }: Protec
         <>
           <div className="protection-status-icon">✕</div>
           <div className="protection-status-text">
-            <p className="protection-status-title">On-device protection not available</p>
-            <p className="protection-status-description">This requires Chrome desktop 139 with Gemini Nano.</p>
+            <p className="protection-status-title">On-device protection: not available on this browser (reduced protection)</p>
+            <p className="protection-status-description">
+              {firebaseConfigured
+                ? "This browser can't run the private model, so we're using our rule checks only. You'll be asked before anything is sent."
+                : "This copy of Airlock isn't connected to Firebase yet, so it runs our rule checks only and can't call any AI model."}
+            </p>
             <div className="protection-status-steps">
               <ol>
                 <li>Use Chrome desktop version 139 or later</li>
@@ -57,6 +84,7 @@ export default function ProtectionStatus({ level, downloadProgress = 0 }: Protec
                 <li>Restart Chrome</li>
               </ol>
             </div>
+            {onConsentChange && firebaseConfigured && <ConsentToggle consent={consent} onChange={onConsentChange} />}
           </div>
         </>
       )}
@@ -64,6 +92,10 @@ export default function ProtectionStatus({ level, downloadProgress = 0 }: Protec
       {downloadProgress > 0 && downloadProgress < 100 && (
         <motion.div
           className="protection-status-progress"
+          role="progressbar"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={downloadProgress}
           animate={{ width: `${downloadProgress}%` }}
           transition={{ duration: DURATION_NORMAL, ease: EASING }}
         >
@@ -71,5 +103,14 @@ export default function ProtectionStatus({ level, downloadProgress = 0 }: Protec
         </motion.div>
       )}
     </div>
+  );
+}
+
+function ConsentToggle({ consent, onChange }: { consent: boolean; onChange: (v: boolean) => void }): React.JSX.Element {
+  return (
+    <label className="protection-status-info">
+      <input type="checkbox" checked={consent} onChange={(e) => onChange(e.target.checked)} /> Send rule-cleaned text to the
+      cloud for this session (reduced protection)
+    </label>
   );
 }

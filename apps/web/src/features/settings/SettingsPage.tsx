@@ -1,27 +1,25 @@
 import React, { useState } from 'react';
+import { ALL_CATEGORIES, DEFAULT_POLICY, type Action } from '@airlock/scrub-engine';
+import { useSettings } from './useSettings';
 import './SettingsPage.css';
+
+const ACTIONS: Action[] = ['PSEUDONYMIZE', 'GENERALIZE', 'BLOCK', 'KEEP'];
+const ACTION_LABEL: Record<Action, string> = {
+  PSEUDONYMIZE: 'Swap for a stand-in',
+  GENERALIZE: 'Generalise',
+  BLOCK: 'Hold back',
+  KEEP: 'Keep as is',
+};
+const label = (s: string) => s.charAt(0) + s.slice(1).toLowerCase().replace(/_/g, ' ');
 
 /**
  * Settings page: session TTL, category defaults, show stand-ins, export/delete data, language.
- * BRIEF §P1-3.
- * // TODO(settings): implement settings hooks and local storage
+ * BRIEF §P1-3. Values live in localStorage via useSettings.
  */
 export default function SettingsPage(): React.JSX.Element {
-  const [sessionTtl, setSessionTtl] = useState(24);
-  const [showStandIns, setShowStandIns] = useState(false);
-  const [language, setLanguage] = useState('en');
-
-  const handleExport = () => {
-    // TODO(settings): export all data as JSON
-    alert('TODO: Export data');
-  };
-
-  const handleDelete = () => {
-    if (confirm('Delete all local data, including sessions and receipts?')) {
-      // TODO(settings): call forgetAll() on vault
-      alert('TODO: Delete all data');
-    }
-  };
+  const { settings, update, exportLocalData, deleteLocalData } = useSettings();
+  const [confirming, setConfirming] = useState(false);
+  const [done, setDone] = useState('');
 
   return (
     <div className="settings-page">
@@ -37,13 +35,41 @@ export default function SettingsPage(): React.JSX.Element {
               type="number"
               min="1"
               max="168"
-              value={sessionTtl}
-              onChange={(e) => setSessionTtl(Number(e.target.value))}
+              value={settings.sessionTtlHours}
+              onChange={(e) => update({ sessionTtlHours: Math.min(168, Math.max(1, Number(e.target.value) || 24)) })}
             />
             <span>hours</span>
           </div>
           <p className="settings-field-help">Default is 24 hours. After this time, local session mappings are deleted automatically.</p>
         </div>
+      </div>
+
+      <div className="settings-section">
+        <h2 className="settings-section-title">What to do with each kind of detail</h2>
+        {ALL_CATEGORIES.map((c) => (
+          <div className="settings-field" key={c}>
+            <label htmlFor={`cat-${c}`}>{label(c)}</label>
+            <select
+              id={`cat-${c}`}
+              value={settings.categoryOverrides[c] ?? DEFAULT_POLICY[c]}
+              onChange={(e) => {
+                const value = e.target.value as Action;
+                const next = { ...settings.categoryOverrides };
+                if (value === DEFAULT_POLICY[c]) delete next[c];
+                else next[c] = value;
+                update({ categoryOverrides: next });
+              }}
+            >
+              {ACTIONS.map((a) => (
+                <option key={a} value={a}>
+                  {ACTION_LABEL[a]}
+                  {a === DEFAULT_POLICY[c] ? ' (default)' : ''}
+                </option>
+              ))}
+            </select>
+          </div>
+        ))}
+        <p className="settings-field-help">An org policy, if you join one, takes priority over these.</p>
       </div>
 
       <div className="settings-section">
@@ -53,12 +79,12 @@ export default function SettingsPage(): React.JSX.Element {
             <input
               id="show-standins"
               type="checkbox"
-              checked={showStandIns}
-              onChange={(e) => setShowStandIns(e.target.checked)}
+              checked={settings.showStandIns}
+              onChange={(e) => update({ showStandIns: e.target.checked })}
             />
-            Show stand-in values in chat
+            Show what was sent (the stand-in version) in chat
           </label>
-          <p className="settings-field-help">When enabled, you will see both the original and the stand-in in messages.</p>
+          <p className="settings-field-help">Turn this off to see only what you wrote and the restored answer.</p>
         </div>
       </div>
 
@@ -66,7 +92,7 @@ export default function SettingsPage(): React.JSX.Element {
         <h2 className="settings-section-title">Language</h2>
         <div className="settings-field">
           <label htmlFor="language">UI language:</label>
-          <select id="language" value={language} onChange={(e) => setLanguage(e.target.value)}>
+          <select id="language" value={settings.language} onChange={(e) => update({ language: e.target.value })}>
             <option value="en">English</option>
           </select>
         </div>
@@ -75,15 +101,29 @@ export default function SettingsPage(): React.JSX.Element {
       <div className="settings-section">
         <h2 className="settings-section-title">Data</h2>
         <div className="settings-actions">
-          <button className="settings-action-button" onClick={handleExport}>
-            ↓ Export data
+          <button className="settings-action-button" onClick={() => void exportLocalData()}>
+            Export data
           </button>
-          <button className="settings-action-button settings-action-button--danger" onClick={handleDelete}>
-            ✕ Delete all data
-          </button>
+          {!confirming ? (
+            <button className="settings-action-button settings-action-button--danger" onClick={() => setConfirming(true)}>
+              Delete all data
+            </button>
+          ) : (
+            <button
+              className="settings-action-button settings-action-button--danger"
+              onClick={() =>
+                void deleteLocalData().then(() => {
+                  setConfirming(false);
+                  setDone('Done. Sessions, receipts and settings on this device are gone.');
+                })
+              }
+            >
+              Yes, delete sessions, receipts and settings
+            </button>
+          )}
         </div>
-        <p className="settings-field-help">
-          All your data is stored locally on this device. Export to back it up. Delete to clear everything.
+        <p className="settings-field-help" role="status">
+          {done || 'All your data is stored locally on this device. Export to back it up. Delete to clear everything.'}
         </p>
       </div>
     </div>

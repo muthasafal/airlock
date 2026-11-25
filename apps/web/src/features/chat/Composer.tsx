@@ -1,22 +1,30 @@
 import React, { useState, useCallback } from 'react';
 import RoutePicker from './RoutePicker';
+import type { RouteOverride } from '../../lib/router';
+import type { PreviewSegment } from './useLivePreview';
 import './Composer.css';
 
 interface ComposerProps {
-  onSubmit: (text: string, route: 'LOCAL_ANSWER' | 'CLOUD_SCRUBBED') => void;
+  onSubmit: (text: string, route: RouteOverride) => void;
+  onTextChange?: (text: string) => void;
   isLoading?: boolean;
-  redactionPreview?: string;
+  /** Live redaction preview: plain and sensitive segments, rendered as text (never HTML). */
+  previewSegments?: PreviewSegment[];
 }
 
 /**
  * Message composer with live redaction preview (highlighted sensitive spans).
- * Route override picker (device-only or cloud).
+ * Route override picker (automatic, device-only or cloud).
  * BRIEF §P0-6.
- * // TODO(composer): integrate live preview from scrub engine on 300ms debounce
  */
-export default function Composer({ onSubmit, isLoading = false, redactionPreview }: ComposerProps): React.JSX.Element {
+export default function Composer({ onSubmit, onTextChange, isLoading = false, previewSegments = [] }: ComposerProps): React.JSX.Element {
   const [text, setText] = useState('');
-  const [route, setRoute] = useState<'LOCAL_ANSWER' | 'CLOUD_SCRUBBED'>('CLOUD_SCRUBBED');
+  const [route, setRoute] = useState<RouteOverride>('AUTO');
+
+  const change = (value: string) => {
+    setText(value);
+    onTextChange?.(value);
+  };
 
   const handleSubmit = useCallback(
     (e: React.FormEvent) => {
@@ -24,10 +32,13 @@ export default function Composer({ onSubmit, isLoading = false, redactionPreview
       if (text.trim() && !isLoading) {
         onSubmit(text, route);
         setText('');
+        onTextChange?.('');
       }
     },
-    [text, route, isLoading, onSubmit]
+    [text, route, isLoading, onSubmit, onTextChange]
   );
+
+  const sensitive = previewSegments.filter((s) => s.category).length;
 
   return (
     <form className="composer" onSubmit={handleSubmit}>
@@ -35,15 +46,30 @@ export default function Composer({ onSubmit, isLoading = false, redactionPreview
         <textarea
           className="composer-input"
           value={text}
-          onChange={(e) => setText(e.target.value)}
+          onChange={(e) => change(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) handleSubmit(e);
+          }}
           placeholder="Paste confidential material here. Names, emails, API keys, any sensitive info. Airlock will protect it."
           disabled={isLoading}
           aria-label="Message input"
         />
-        {redactionPreview && (
-          <div className="composer-preview">
-            <p className="composer-preview-label">Live preview (sensitive highlighted)</p>
-            <div className="composer-preview-text" dangerouslySetInnerHTML={{ __html: redactionPreview }} />
+        {sensitive > 0 && (
+          <div className="composer-preview" aria-live="polite">
+            <p className="composer-preview-label">
+              Live preview: {sensitive} sensitive detail{sensitive === 1 ? '' : 's'} will be swapped before sending
+            </p>
+            <div className="composer-preview-text">
+              {previewSegments.map((s, i) =>
+                s.category ? (
+                  <mark key={i} title={s.category.toLowerCase().replace(/_/g, ' ')}>
+                    {s.text}
+                  </mark>
+                ) : (
+                  <span key={i}>{s.text}</span>
+                )
+              )}
+            </div>
           </div>
         )}
       </div>

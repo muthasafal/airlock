@@ -1,33 +1,62 @@
-import { Finding } from '@airlock/scrub-engine';
-import { Receipt, ProtectionLevel } from '../../lib/receipts';
-import { RouteDecision } from '../../lib/router';
-import { ChamberState } from '../../ui/AirlockChamber';
+import { useCallback, useEffect, useSyncExternalStore } from 'react';
+import type { Finding } from '@airlock/scrub-engine';
+import type { NanoAvailability } from '@airlock/nano-detector';
+import type { ProtectionLevel } from '../../lib/receipts';
+import type { RouteOverride } from '../../lib/router';
+import type { ChamberState } from '../../ui/AirlockChamber';
+import {
+  forgetSession,
+  initSession,
+  previewFindings,
+  sendWithoutSecret,
+  sessionStore,
+  setConsent,
+  submitMessage,
+  type ChatTurn,
+} from '../../lib/session';
 
-export interface Turn {
-  id: string;
-  original: string;
-  originalFindings: Finding[];
-  scrubbed: string;
-  answer: string;
-  restoredSpans: Array<{ start: number; end: number; standIn: string; original: string }>;
-  receipt: Receipt;
-}
+export type Turn = ChatTurn;
 
 export interface AirlockSession {
   turns: Turn[];
-  submit: (text: string, override?: RouteDecision) => Promise<void>;
+  submit: (text: string, override?: RouteOverride) => Promise<void>;
   previewFindings: (text: string) => Finding[];
   chamberState: ChamberState;
   protectionLevel: ProtectionLevel;
   sessionId: string;
   forgetSession: () => void;
+  busy: boolean;
+  consent: boolean;
+  setConsent: (v: boolean) => void;
+  availability: NanoAvailability;
+  firebaseConfigured: boolean;
+  sendWithoutSecret: (turnId: string) => Promise<void>;
 }
 
 /**
  * Hook managing a full Airlock chat session.
- * Scrubbing, cloud calls, restore, receipts, vault — all orchestrated here.
- * All logic lives here; UI components are presentational only. BRIEF §P0-6.
+ * Scrubbing, cloud calls, restore, receipts, vault: all orchestrated in lib/session.
+ * All logic lives there; UI components are presentational only. BRIEF §P0-6.
  */
 export function useAirlockSession(): AirlockSession {
-  throw new Error('not implemented: architecture-skeleton');
+  const s = useSyncExternalStore(sessionStore.subscribe, sessionStore.getSnapshot);
+  useEffect(() => {
+    void initSession();
+  }, []);
+  const forget = useCallback(() => void forgetSession(), []);
+  return {
+    turns: s.turns,
+    submit: submitMessage,
+    previewFindings,
+    chamberState: s.chamberState,
+    protectionLevel: s.protectionLevel,
+    sessionId: s.sessionId,
+    forgetSession: forget,
+    busy: s.busy,
+    consent: s.consent,
+    setConsent,
+    availability: s.availability,
+    firebaseConfigured: s.firebaseConfigured,
+    sendWithoutSecret,
+  };
 }

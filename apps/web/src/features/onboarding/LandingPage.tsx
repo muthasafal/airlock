@@ -1,15 +1,32 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import AirlockChamber from '../../ui/AirlockChamber/AirlockChamber';
 import ProtectionStatus from './ProtectionStatus';
-import EnableNanoButton from './EnableNanoButton';
+import { useProtectionStatus } from './useProtectionStatus';
+import type { ChamberState } from '../../ui/AirlockChamber';
 import './LandingPage.css';
 
 /**
  * Landing page: pitch, chamber animation sample, how-it-works steps, Try it link, status.
  * BRIEF §10.1 /.
  */
+const SAMPLE_CYCLE: ChamberState[] = ['idle', 'scrubbing', 'sending', 'restoring', 'idle', 'scrubbing', 'local'];
+
 export default function LandingPage(): React.JSX.Element {
+  const status = useProtectionStatus();
+  // The chamber plays a sample on a loop: clean, send, restore, then a local answer.
+  const [step, setStep] = useState(0);
+  useEffect(() => {
+    const t = setInterval(() => setStep((i) => (i + 1) % SAMPLE_CYCLE.length), 1800);
+    return () => clearInterval(t);
+  }, []);
+  const statusText =
+    status.level === 'full'
+      ? 'Full on-device protection is ready in your browser. Detection, cleaning and restoring all happen locally.'
+      : status.level === 'reduced'
+        ? 'Your browser can run the private model. Enable it once and detection runs fully on this device.'
+        : 'This browser cannot run the private model yet. Airlock still works with rule checks, and asks before sending anything.';
+
   return (
     <div className="landing-page">
       {/* Hero section */}
@@ -30,7 +47,7 @@ export default function LandingPage(): React.JSX.Element {
         </div>
 
         <div className="landing-hero-chamber">
-          <AirlockChamber state="scrubbing" progress={50} />
+          <AirlockChamber state={SAMPLE_CYCLE[step]} progress={50} />
         </div>
       </section>
 
@@ -68,12 +85,16 @@ export default function LandingPage(): React.JSX.Element {
       <section className="landing-protection">
         <h2 className="landing-section-title">Get started</h2>
         <div className="landing-protection-content">
-          <ProtectionStatus level="full" />
+          <ProtectionStatus
+            level={status.level}
+            availability={status.availability}
+            downloadProgress={status.initProgress ?? 0}
+            enabling={status.initProgress !== null}
+            firebaseConfigured={status.firebaseConfigured}
+            onEnable={status.startInit}
+          />
           <div className="landing-protection-action">
-            <p className="landing-protection-text">
-              Full on-device protection is ready in your browser. All detection, scrubbing, and answer restoration happen locally.
-            </p>
-            <EnableNanoButton onClick={() => alert('TODO: initializeDeviceModel()')} />
+            <p className="landing-protection-text">{statusText}</p>
           </div>
         </div>
       </section>
