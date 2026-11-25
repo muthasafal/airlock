@@ -18,7 +18,7 @@ export * from './detectors/index.js';
 // Core algorithms
 export * from './merge.js';
 export * from './policy.js';
+export * from './generalize.js';
 export * from './stand-ins.js';
 export * from './restore.js';
 export * from './scrub.js';
-

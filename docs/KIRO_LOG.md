@@ -98,3 +98,16 @@ Built with Kiro. Styled by hand. Zero external UI frameworks. Ready for feature 
 **What Kiro did:** built the design tokens, AppShell with nav for every route, the AirlockChamber SVG with all six states and a reduced-motion diagram, the chat (composer with live preview, three-view turns, restored spans, route picker), protection status and the Enable button, the landing page, receipts, the clipboard airlock, settings, org (create/join, policy, terms, stats), the benchmark table and the legal pages. Fonts come from @fontsource packages.
 
 **Reviewed with Claude Code:** Claude Code ran the app in Chrome and found a framer-motion crash (a CSS easing string passed to a JS transition), a lint error (setState in an effect), a duplicate chamber component and missing nav routes. Kiro fixed all of these in a second pass. Credits: about 5.7 for the build and 3.2 for the fixes (Claude Haiku 4.5).
+
+## 2026-11-26 - scrub-engine spec (Kiro) and implementation (Claude Code)
+
+**What Kiro did:** wrote the scrub-engine spec (Quick Spec, Claude Haiku 4.5): `requirements.md` in EARS form (R1-R38: every rule detector, merge, policy, stand-ins, restore), `design.md` with the nine correctness properties P1-P9 traced to the requirements, and `tasks.md`. Kiro then hit its monthly credit limit ("You've reached your monthly usage limit"), so it could not run the tasks.
+
+**Implemented with Claude Code (Claude-authored code, following Kiro's design):** every stub in `packages/scrub-engine`: the 15 rule detectors, Luhn/Verhoeff/entropy, Layer C merge, policy resolution, the seeded stand-in generator with pools (`scripts/gen-pools.mjs`: 300+ names per pool, 550 fictional companies checked against a famous-brand list), generalisation, restore and the streaming restore buffer, `scrub`, and the `check-prompt` secret guard. Tests: 57 unit tests and the 9 fast-check properties at 1,000 runs each.
+
+**PBT counterexample, shrunk and fixed:** Property 8 (idempotence) failed after 66 runs and shrank to `"the 5593 3936 4224 0007 . the type 2 diabetes ."`. The Aadhaar detector matched the first 12 digits of a 16-digit card (its lookahead only rejected adjacent digits, not a space then digits). Then the merge rule "higher severity always wins" let that shorter Aadhaar span win over the card, so the card's last 4 digits went out in clear text. The fixes:
+- The digit detectors now reject spaced digit runs that continue.
+- Layer C now merges each cluster of overlapping findings into one span covering their union, so no part of an overlapped value can leak.
+- Secret categories (keys, tokens, passwords) always take over the merged span.
+
+After the fixes, all 9 properties pass on repeated runs.

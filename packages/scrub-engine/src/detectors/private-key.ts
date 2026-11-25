@@ -1,6 +1,9 @@
-import { Finding, DetectorConfig } from '../types';
+import type { DetectorConfig, Finding } from '../types.js';
+import { matchAll } from './util.js';
 
-/** Detects PRIVATE_KEY spans: PEM format BEGIN/END markers. BRIEF §8.1 Layer A. */
-export function detectPrivateKey(_text: string, _config?: DetectorConfig): Finding[] {
-  throw new Error('not implemented: architecture-skeleton');
+const PEM = /-----BEGIN [A-Z ]*PRIVATE KEY-----[\s\S]*?(?:-----END [A-Z ]*PRIVATE KEY-----|$(?![\s\S]))/g;
+
+/** PEM private key blocks from the BEGIN marker to the END marker (or end of text). BRIEF §8.1 PRIVATE_KEY. */
+export function detectPrivateKey(text: string, _config?: DetectorConfig): Finding[] {
+  return matchAll(text, PEM, 'PRIVATE_KEY');
 }

@@ -35,6 +35,10 @@ export default [
     },
   },
   {
+    files: ['**/*.mjs', '**/bin/**/*.js', '**/scripts/**/*.js'],
+    languageOptions: { globals: { process: 'readonly', console: 'readonly' } },
+  },
+  {
     ignores: [
       '**/node_modules/**',
       '**/dist/**',

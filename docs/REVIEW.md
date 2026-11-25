@@ -55,3 +55,8 @@ Cover:
 Done when: every BRIEF feature has a home and nothing is orphaned; npm run typecheck, npm run lint and npm run build all pass; tests pass with no tests yet. Write requirements (EARS) first; I will review before design.
 ```
 After that: tooling (A4–A6 in `_planning/kiro-kickoff.md`), then specs scrub-engine, nano-detector, hybrid-router, vault, firebase-platform, airlock-chat.
+
+## Claude-authored code (Kiro out of credits, 2026-11-26)
+Kiro's free monthly credits ran out after the architecture-skeleton spec, the frontend, and the scrub-engine spec documents. From that point Claude Code implements the remaining logic inside Kiro's stubs, following Kiro's design documents. Each part is logged in KIRO_LOG.md as "implemented with Claude Code":
+- [x] scrub-engine: detectors, merge, policy, stand-ins, restore, scrub, secret guard, unit tests + 9 PBT properties
+- Design deviation, recorded here: Layer C merges overlapping findings into their union span instead of dropping the loser, and secret categories always win. This came from a shrunk PBT counterexample in which a partly overlapped card number leaked.

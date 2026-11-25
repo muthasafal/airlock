@@ -72,8 +72,10 @@ export interface SessionMapping {
   forward: Map<string, string>;
   /** Stand-in → original */
   reverse: Map<string, string>;
-  /** Aliases (e.g., first name only, surname only) */
+  /** Aliases, stand-in part → original part (e.g. "Maya" → "Priya", "Iyer" → "Shah"). Used by restore. */
   aliases: Map<string, string>;
+  /** Alias parts forward, lower-cased original part → stand-in part. Keeps later first-name-only mentions consistent. */
+  aliasForward: Map<string, string>;
   /** All original values seen in this session (for collision check) */
   originals: Set<string>;
   /** Session seed for deterministic PRNG */
@@ -93,6 +95,8 @@ export interface ScrubResult {
     action: Action;
     replacement?: string;
   }>;
+  /** Detectors that threw (for example a Nano timeout). Non-zero means protection was Reduced. */
+  failedDetectors?: number;
 }
 
 export interface RestoreResult {

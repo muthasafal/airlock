@@ -1,6 +1,10 @@
-import { Finding, DetectorConfig } from '../types';
+import type { DetectorConfig, Finding } from '../types.js';
+import { keywordBefore, matchAll } from './util.js';
 
-/** Detects BANK_ACCOUNT spans: 9–18 digits near account keywords. BRIEF §8.1 Layer A. */
-export function detectBankAccount(_text: string, _config?: DetectorConfig): Finding[] {
-  throw new Error('not implemented: architecture-skeleton');
+const ACCOUNT = /(?<![\d])\d{9,18}(?![\d])/g;
+const KEYWORDS = /(account|a\/c|acct)/i;
+
+/** 9 to 18 digit runs within 30 characters after "account", "a/c" or "acct". BRIEF §8.1 BANK_ACCOUNT. */
+export function detectBankAccount(text: string, _config?: DetectorConfig): Finding[] {
+  return matchAll(text, ACCOUNT, 'BANK_ACCOUNT', (_v, m) => keywordBefore(text, m.index, KEYWORDS, 30));
 }

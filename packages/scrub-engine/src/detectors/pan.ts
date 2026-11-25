@@ -1,6 +1,9 @@
-import { Finding, DetectorConfig } from '../types';
+import type { DetectorConfig, Finding } from '../types.js';
+import { matchAll } from './util.js';
 
-/** Detects PAN spans: regex with optional PCHABGJLFT 4th-char check. BRIEF §8.1 Layer A. */
-export function detectPan(_text: string, _config?: DetectorConfig): Finding[] {
-  throw new Error('not implemented: architecture-skeleton');
+const PAN = /\b[A-Z]{5}[0-9]{4}[A-Z]\b/g;
+
+/** PAN numbers; a 4th character in PCHABGJLFT (holder type) gives full confidence. BRIEF §8.1 PAN. */
+export function detectPan(text: string, _config?: DetectorConfig): Finding[] {
+  return matchAll(text, PAN, 'PAN', (v) => ('PCHABGJLFT'.includes(v[3]) ? 1 : 0.8));
 }

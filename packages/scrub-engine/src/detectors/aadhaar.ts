@@ -1,6 +1,10 @@
-import { Finding, DetectorConfig } from '../types';
+import type { DetectorConfig, Finding } from '../types.js';
+import { verhoeffCheck } from '../checksums/verhoeff.js';
+import { matchAll } from './util.js';
 
-/** Detects AADHAAR spans: regex + Verhoeff checksum validation. BRIEF §8.1 Layer A. */
-export function detectAadhaar(_text: string, _config?: DetectorConfig): Finding[] {
-  throw new Error('not implemented: architecture-skeleton');
+const AADHAAR = /(?<!\d[\s-]?)[2-9]\d{3}\s?\d{4}\s?\d{4}(?![\s-]?\d)/g;
+
+/** 12-digit Aadhaar numbers that also pass the Verhoeff checksum. BRIEF §8.1 AADHAAR. */
+export function detectAadhaar(text: string, _config?: DetectorConfig): Finding[] {
+  return matchAll(text, AADHAAR, 'AADHAAR', (v) => verhoeffCheck(v));
 }

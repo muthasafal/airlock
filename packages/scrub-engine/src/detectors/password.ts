@@ -1,6 +1,9 @@
-import { Finding, DetectorConfig } from '../types';
+import type { DetectorConfig, Finding } from '../types.js';
+import { matchAll } from './util.js';
 
-/** Detects PASSWORD spans: password/pwd/pin := value pattern. BRIEF §8.1 Layer A. */
-export function detectPassword(_text: string, _config?: DetectorConfig): Finding[] {
-  throw new Error('not implemented: architecture-skeleton');
+const PASSWORD = /\b(?:password|passwd|pwd|pin)\s*[:=]\s*(\S+)/gi;
+
+/** The value after "password:", "pwd=", "pin:" and similar (the value only). BRIEF §8.1 PASSWORD. */
+export function detectPassword(text: string, _config?: DetectorConfig): Finding[] {
+  return matchAll(text, PASSWORD, 'PASSWORD', () => true, 1);
 }

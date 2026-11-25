@@ -4,7 +4,7 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'node',
-    include: ['test/properties/**/*.prop.ts'],
+    include: ['test/properties/**/*.test.ts'],
     testTimeout: 30000, // PBT can take longer
   },
 });
