@@ -1,3 +1,6 @@
+---
+inclusion: always
+---
 # Project Structure
 
 ## Monorepo layout (npm workspaces)

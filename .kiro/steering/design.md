@@ -1,3 +1,7 @@
+---
+inclusion: fileMatch
+fileMatchPattern: "apps/web/src/**/*.{tsx,ts,css}"
+---
 # Design Language
 
 **FileMatch**: `apps/web/src/**/*.{tsx,css}`

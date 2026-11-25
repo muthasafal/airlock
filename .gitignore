@@ -1,4 +1,4 @@
-﻿# Dependencies
+# Dependencies
 node_modules/
 .pnp
 .pnp.js
@@ -64,4 +64,3 @@ Desktop.ini
 # Source maps in production
 dist/**/*.map
 
-docs/

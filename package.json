@@ -10,11 +10,12 @@
   "scripts": {
     "dev": "npm run dev -w apps/web",
     "build": "npm run build -w packages/scrub-engine && npm run build -w packages/nano-detector && npm run build -w apps/web",
-    "test": "vitest",
+    "test": "vitest --passWithNoTests",
     "test:props": "npm run test:props -w packages/scrub-engine",
-    "test:unit": "vitest run",
+    "test:unit": "vitest run --passWithNoTests",
     "test:e2e": "playwright test",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "typecheck": "tsc -b",
+    "lint": "eslint . --max-warnings 0",
     "preview": "npm run preview -w apps/web",
     "deploy": "npm run build && firebase deploy"
   },

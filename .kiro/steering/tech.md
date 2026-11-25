@@ -1,3 +1,6 @@
+---
+inclusion: always
+---
 # Technical Steering
 
 ## Stack
@@ -11,7 +14,7 @@
 - **Testing**: Vitest, fast-check (PBT), Playwright
 - **Build**: npm workspaces monorepo
 
-## Platform constraints (Firebase AI Logic, Nov 2024)
+## Platform constraints (Firebase AI Logic, Nov 2026)
 
 ### On-device (Chrome 139+ with Gemini Nano)
 

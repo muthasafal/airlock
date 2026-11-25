@@ -59,4 +59,4 @@ Apache-2.0
 
 ---
 
-*Built for Firebase #BuildHybridAI, Kiroween 2024, and Slay Hacks*
+*Built for Firebase #BuildHybridAI, Kiroween 2026, and Slay Hacks*

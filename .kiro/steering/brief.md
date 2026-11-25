@@ -1,3 +1,6 @@
+---
+inclusion: manual
+---
 # Full Brief Reference
 
 **Usage**: `#brief` to include this

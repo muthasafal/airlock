@@ -1,8 +1,8 @@
 # Kiro Usage Log
 
-This document tracks how Kiro was used throughout the Airlock project for the Kiroween 2024 submission.
+This document tracks how Kiro was used throughout the Airlock project for the Kiroween 2026 submission.
 
-## 2024-11-25 - Complete Project Setup
+## 2026-11-25 - Complete Project Setup
 
 **What I asked:** "Follow this brief I made and set everything up"
 
