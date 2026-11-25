@@ -56,25 +56,25 @@ export default function LandingPage(): React.JSX.Element {
         <h2 className="landing-section-title">How it works</h2>
         <div className="landing-steps">
           <div className="landing-step">
-            <div className="landing-step-icon">📝</div>
+            <div className="landing-step-icon" aria-hidden="true">1</div>
             <h3>Paste confidential material</h3>
             <p>Names, emails, API keys, medical details, anything sensitive. Airlock sees what you're sending.</p>
           </div>
 
           <div className="landing-step">
-            <div className="landing-step-icon">✨</div>
+            <div className="landing-step-icon" aria-hidden="true">2</div>
             <h3>On-device detection</h3>
             <p>Your device finds sensitive details and swaps them for realistic stand-ins. Nothing leaves unclean.</p>
           </div>
 
           <div className="landing-step">
-            <div className="landing-step-icon">🤖</div>
+            <div className="landing-step-icon" aria-hidden="true">3</div>
             <h3>Cloud AI reasons on clean text</h3>
             <p>The model gets natural, readable text with consistent replacements. Answers are better because stand-ins stay in context.</p>
           </div>
 
           <div className="landing-step">
-            <div className="landing-step-icon">✅</div>
+            <div className="landing-step-icon" aria-hidden="true">4</div>
             <h3>Answer restored locally</h3>
             <p>Stand-ins in the reply are swapped back to your real details before you see it. All on your device.</p>
           </div>

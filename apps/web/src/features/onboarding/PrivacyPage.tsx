@@ -17,7 +17,7 @@ export default function PrivacyPage(): React.JSX.Element {
         <h2>What we see</h2>
         <ul>
           <li>Only the cleaned text (with secrets replaced)</li>
-          <li>Your question in full (since you chose to send it)</li>
+          <li>Your question, cleaned the same way (stand-ins in place of real details)</li>
           <li>Your email and name if you sign in</li>
           <li>Counts of secrets detected (in org mode only), never the content</li>
         </ul>
@@ -29,7 +29,7 @@ export default function PrivacyPage(): React.JSX.Element {
           <li>Original secret values or names</li>
           <li>Session mappings or the reverse mapping</li>
           <li>Encryption keys</li>
-          <li>Your browser history or device info (except Chrome version for compatibility)</li>
+          <li>Your browser history or device info</li>
           <li>Raw chat transcripts with real values</li>
         </ul>
       </section>
@@ -54,7 +54,7 @@ export default function PrivacyPage(): React.JSX.Element {
       <section>
         <h2>Firebase services</h2>
         <ul>
-          <li><strong>AI Logic:</strong> We call Gemini 3.5 Flash (the cloud model) with only cleaned text</li>
+          <li><strong>AI Logic:</strong> Google's Gemini model (gemini-3.5-flash-lite by default) receives only cleaned text; Gemini Nano runs on your device</li>
           <li><strong>App Check:</strong> Protects our API from abuse</li>
           <li><strong>Auth:</strong> Optional for org mode; we store only your email and name</li>
           <li><strong>Firestore:</strong> Org policies and stats only, never content</li>

@@ -35,7 +35,7 @@ export default function AppShell({ children }: AppShellProps): React.JSX.Element
       <header className="app-header">
         <div className="app-header-container">
           <Link to="/" className="app-logo">
-            <span className="app-logo-icon">🔐</span>
+            <span className="app-logo-icon" aria-hidden="true">◐</span>
             <span className="app-logo-text">Airlock</span>
           </Link>
 
@@ -56,7 +56,7 @@ export default function AppShell({ children }: AppShellProps): React.JSX.Element
           </nav>
 
           <Link to="/settings" className="app-settings-link" title="Settings">
-            ⚙️ Settings
+            Settings
           </Link>
         </div>
       </header>

@@ -9,7 +9,7 @@ export default function HowItWorksPage(): React.JSX.Element {
       <section className="how-section">
         <h2>The problem</h2>
         <p>
-          Every day, people paste confidential material into cloud AI tools: client names, salaries, medical details, source code with API keys, internal project names. The models train on this, the servers log it, and your secrets spread.
+          Every day, people paste confidential material into cloud AI tools: client names, salaries, medical details, source code with API keys, internal project names. Once it leaves your laptop, you no longer control where it is stored, logged or reviewed.
         </p>
         <p>
           Companies can ban AI tools, but people use them anyway. Or they buy cloud DLP (data loss prevention) tools, which scan prompts by sending them to the vendor's own cloud first. To protect your secret, you hand it to one more company.
@@ -32,7 +32,7 @@ export default function HowItWorksPage(): React.JSX.Element {
           <div className="how-step">
             <div className="how-step-num">1</div>
             <div className="how-step-title">Your message</div>
-            <p>"Priya at Acme, salary is 98200"</p>
+            <p>"Priya at Acme, call 98200 12345"</p>
           </div>
           <div className="how-arrow">→</div>
           <div className="how-step">
@@ -44,7 +44,7 @@ export default function HowItWorksPage(): React.JSX.Element {
           <div className="how-step">
             <div className="how-step-num">3</div>
             <div className="how-step-title">Replace</div>
-            <p>"Maya at Northwind, salary is 91234"</p>
+            <p>"Maya at Northwind, call 98765 00003"</p>
           </div>
           <div className="how-arrow">→</div>
           <div className="how-step">

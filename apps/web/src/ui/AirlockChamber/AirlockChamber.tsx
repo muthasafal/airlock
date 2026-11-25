@@ -215,10 +215,10 @@ function AnimatedChamber({ state }: { state: ChamberState }): React.JSX.Element 
 
 function StaticChamberDiagram({ state }: { state: ChamberState }): React.JSX.Element {
   const steps = [
-    { label: 'Your message', icon: '📝' },
-    { label: 'Scrubbed', icon: '✨' },
-    { label: 'On-device or cloud', icon: '🌐' },
-    { label: 'Answer restored', icon: '✅' },
+    { label: 'Your message', icon: '1' },
+    { label: 'Scrubbed', icon: '2' },
+    { label: 'On-device or cloud', icon: '3' },
+    { label: 'Answer restored', icon: '4' },
   ];
 
   return (
