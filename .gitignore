@@ -1,13 +1,67 @@
-﻿node_modules/
+﻿# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Testing
+coverage/
+.nyc_output/
+playwright-report/
+test-results/
+
+# Production build
 dist/
 build/
-coverage/
+*.local
+
+# Environment
 .env
-.env.*
-!.env.example
-*.log
-.firebase/
-.devvit/
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# IDE
+.vscode/*
+!.vscode/extensions.json
+.idea
 .DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Firebase
+.firebase/
+*-debug.log
+firebase-debug.*.log
+.runtimeconfig.json
+
+# Secrets (never commit)
+**/debug-token.txt
+**/service-account*.json
+**/*-key.json
+**/.env*
+!**/.env.example
+
+# OS
 Thumbs.db
-# Keep .kiro/ tracked: Kiroween requires it in the repo.
+Desktop.ini
+
+# Temporary
+*.tmp
+*.temp
+.cache/
+
+# Source maps in production
+dist/**/*.map
+
+docs/

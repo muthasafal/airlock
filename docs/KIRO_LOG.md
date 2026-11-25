@@ -1,7 +1,23 @@
-# Kiro log
+# Kiro Usage Log
 
-A running record of how Kiro was used to build Airlock, for the Kiroween write-up. Add one row after each meaningful step.
+This document tracks how Kiro was used throughout the Airlock project for the Kiroween 2024 submission.
 
-| Date | Kiro feature | What I asked | What Kiro did | What I changed / learned |
-|---|---|---|---|---|
-| 2026-11-25 | Setup | Repo created with license and brief | | |
+## 2024-11-XX - Project Setup
+
+**What I asked:** Set up the project structure according to the brief
+
+**What Kiro did:**
+- Created monorepo structure with npm workspaces
+- Set up `.gitignore` with proper exclusions for secrets
+- Created Apache-2.0 `LICENSE` file
+- Initialized `package.json` with workspace configuration
+- Created directory structure for packages and apps
+
+**What changed:**
+- Root package.json with workspaces configured
+- Directory structure: packages/scrub-engine, packages/nano-detector, apps/web
+- Documentation structure: docs/BRIEF.md, docs/KIRO_LOG.md
+
+---
+
+(This log will be updated as development progresses)

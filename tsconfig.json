@@ -1,0 +1,8 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./packages/scrub-engine" },
+    { "path": "./packages/nano-detector" },
+    { "path": "./apps/web" }
+  ]
+}
