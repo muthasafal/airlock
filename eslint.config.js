@@ -31,17 +31,20 @@ export default [
         'warn',
         { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
       ],
+      'no-undef': 'off',
     },
   },
   {
     ignores: [
-      'node_modules/**',
-      'dist/**',
-      'build/**',
+      '**/node_modules/**',
+      '**/dist/**',
+      '**/build/**',
       '.firebase/**',
       'coverage/**',
       'playwright-report/**',
       'test-results/**',
+      '**/*.tsbuildinfo',
+      'graphify-out/**',
     ],
   },
 ];

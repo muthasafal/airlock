@@ -1,0 +1,120 @@
+/* Design tokens for Airlock */
+
+:root {
+  /* Typography */
+  --font-display: 'Baloo 2', system-ui, sans-serif;
+  --font-body: 'Nunito', system-ui, sans-serif;
+  --font-accent: 'Caveat', cursive;
+
+  /* Palette: cool pale mint ground, deep ink, action teal, success green */
+  --color-ground: #edf7f4;
+  --color-ink: #1a2e28;
+  --color-action: #0d7a5f;
+  --color-success: #2e7d55;
+
+  /* Semantic category colors (subtle) */
+  --color-cat-person: #c8e6c9;
+  --color-cat-credential: #ffccbc;
+  --color-cat-email: #e1f5fe;
+  --color-cat-phone: #f3e5f5;
+  --color-cat-financial: #fff9c4;
+  --color-cat-health: #fce4ec;
+  --color-cat-location: #e0f2f1;
+  --color-cat-org: #ede7f6;
+
+  /* Shape */
+  --radius-sm: 12px;
+  --radius-card: 28px;
+  --radius-card-lg: 34px;
+  --radius-pill: 9999px;
+
+  /* Motion */
+  --easing-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --easing-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-quick: 150ms;
+  --duration-default: 280ms;
+  --duration-slow: 400ms;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(26, 46, 40, 0.08);
+  --shadow-md: 0 4px 16px rgba(26, 46, 40, 0.12);
+  --shadow-lg: 0 8px 32px rgba(26, 46, 40, 0.16);
+
+  /* Spacing scale */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+}
+
+/* Self-hosted font stubs (files added in later spec) */
+@font-face {
+  font-family: 'Baloo 2';
+  src: url('/fonts/Baloo2-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Baloo 2';
+  src: url('/fonts/Baloo2-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Nunito';
+  src: url('/fonts/Nunito-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Nunito';
+  src: url('/fonts/Nunito-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Caveat';
+  src: url('/fonts/Caveat-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+
+/* Global styles */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-body);
+  background-color: var(--color-ground);
+  color: var(--color-ink);
+  line-height: 1.5;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+
+button {
+  border: none;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: all var(--duration-default) var(--easing-out-expo);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

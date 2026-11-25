@@ -1,9 +1,6 @@
 ---
 inclusion: always
 ---
----
-loadMode: always
----
 
 # Product Steering
 

@@ -2,10 +2,6 @@
 inclusion: fileMatch
 fileMatchPattern: "apps/web/src/**/*.{tsx,ts,css}"
 ---
----
-loadMode: fileMatch
-fileMatch: apps/web/src/**/*.{tsx,css}
----
 
 # Design Language
 

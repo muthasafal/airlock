@@ -15,6 +15,7 @@
     "test": "vitest"
   },
   "dependencies": {
+    "@airlock/scrub-engine": "*",
     "firebase": "^13.0.0",
     "zod": "^3.23.8"
   },

@@ -1,9 +1,6 @@
 ---
 inclusion: manual
 ---
----
-loadMode: manual
----
 
 # Full Brief Reference
 

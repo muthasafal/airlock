@@ -24,28 +24,46 @@ service cloud.firestore {
       // Members
       match /members/{uid} {
         allow read: if request.auth != null && isMember(orgId);
-        allow create: if request.auth != null && request.auth.uid == uid;
+        // Create: require invite code hash to match org's hash. REVIEW §1: invite-code check.
+        allow create: if request.auth != null 
+                      && request.auth.uid == uid
+                      && request.resource.data.inviteCodeHash == get(/databases/$(database)/documents/orgs/$(orgId)).data.inviteCodeHash;
         allow update: if request.auth != null && isAdmin(orgId);
       }
       
-      // Stats - counts only, no content
+      // Stats - counts only, no content. REVIEW §1: create vs update, monotonic increments.
       match /stats/{date} {
-        // Members can only increment numeric fields
-        allow write: if request.auth != null 
-                     && isMember(orgId)
-                     && request.resource.data.diff(resource.data).affectedKeys()
-                        .hasOnly(['counts', 'requests', 'routes'])
-                     && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['counts']) 
-                         || request.resource.data.counts.keys().hasOnly([
-                              'EMAIL', 'PHONE', 'AADHAAR', 'PAN', 'IFSC', 'BANK_ACCOUNT',
-                              'CARD', 'UPI', 'API_KEY', 'JWT', 'PRIVATE_KEY', 'PASSWORD',
-                              'IP_ADDRESS', 'URL_SECRET', 'ORG_TERM', 'PERSON', 'ORG',
-                              'LOCATION', 'HEALTH', 'FINANCIAL_AMOUNT', 'LEGAL_MATTER',
-                              'INTERNAL_PROJECT', 'CREDENTIAL', 'GOVERNMENT_ID', 'DATE_OF_BIRTH',
-                              'OTHER_SENSITIVE'
-                            ]))
-                     && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['routes'])
-                         || request.resource.data.routes.keys().hasOnly(['LOCAL_ANSWER', 'CLOUD_SCRUBBED', 'BLOCK']));
+        // Create: allow if all fields are numeric. REVIEW §1: handle null resource on create.
+        allow create: if request.auth != null 
+                      && isMember(orgId)
+                      && request.resource.data.keys().hasOnly(['counts', 'requests', 'routes'])
+                      && request.resource.data.counts is map && request.resource.data.requests is int && request.resource.data.routes is map;
+        
+        // Update: members can only increment numeric fields with monotonic check. REVIEW §1: int + >= old value.
+        allow update: if request.auth != null 
+                      && isMember(orgId)
+                      && request.resource.data.diff(resource.data).affectedKeys()
+                         .hasOnly(['counts', 'requests', 'routes'])
+                      && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['counts']) 
+                          || (request.resource.data.counts.keys().hasOnly([
+                               'EMAIL', 'PHONE', 'AADHAAR', 'PAN', 'IFSC', 'BANK_ACCOUNT',
+                               'CARD', 'UPI', 'API_KEY', 'JWT', 'PRIVATE_KEY', 'PASSWORD',
+                               'IP_ADDRESS', 'URL_SECRET', 'ORG_TERM', 'PERSON', 'ORG',
+                               'LOCATION', 'HEALTH', 'FINANCIAL_AMOUNT', 'LEGAL_MATTER',
+                               'INTERNAL_PROJECT', 'CREDENTIAL', 'GOVERNMENT_ID', 'DATE_OF_BIRTH',
+                               'OTHER_SENSITIVE'
+                             ])
+                              && request.resource.data.counts.keys().toList().all(key => 
+                                 request.resource.data.counts[key] is int 
+                                 && request.resource.data.counts[key] >= resource.data.counts.get(key, 0))))
+                      && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['requests'])
+                          || (request.resource.data.requests is int 
+                              && request.resource.data.requests >= resource.data.requests))
+                      && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['routes'])
+                          || (request.resource.data.routes.keys().hasOnly(['LOCAL_ANSWER', 'CLOUD_SCRUBBED', 'BLOCK'])
+                              && request.resource.data.routes.keys().toList().all(key =>
+                                 request.resource.data.routes[key] is int
+                                 && request.resource.data.routes[key] >= resource.data.routes.get(key, 0))));
         
         allow read: if request.auth != null && isAdmin(orgId);
       }
@@ -57,3 +75,4 @@ service cloud.firestore {
     }
   }
 }
+

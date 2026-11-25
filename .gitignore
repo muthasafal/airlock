@@ -64,3 +64,7 @@ Desktop.ini
 # Source maps in production
 dist/**/*.map
 
+
+# Local tooling
+graphify-out/
+**/*.tsbuildinfo
