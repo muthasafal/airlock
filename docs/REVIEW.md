@@ -59,4 +59,8 @@ After that: tooling (A4–A6 in `_planning/kiro-kickoff.md`), then specs scrub-e
 ## Claude-authored code (Kiro out of credits, 2026-11-26)
 Kiro's free monthly credits ran out after the architecture-skeleton spec, the frontend, and the scrub-engine spec documents. From that point Claude Code implements the remaining logic inside Kiro's stubs, following Kiro's design documents. Each part is logged in KIRO_LOG.md as "implemented with Claude Code":
 - [x] scrub-engine: detectors, merge, policy, stand-ins, restore, scrub, secret guard, unit tests + 9 PBT properties
+- [x] nano-detector, web pipeline (vault, receipts, router, cloud client, session), org mode, wiring Kiro's pages
+- [x] firestore.rules rewrite + 15 emulator tests (REVIEW item 1 done)
+- [x] Kiro hooks, agents and mcp.json (REVIEW item 3 done; files written by Claude Code to Kiro's schema)
+- [x] Lint config (REVIEW item 4 done); SETUP_COMPLETE.md removed (item 5, first half)
 - Design deviation, recorded here: Layer C merges overlapping findings into their union span instead of dropping the loser, and secret categories always win. This came from a shrunk PBT counterexample in which a partly overlapped card number leaked.

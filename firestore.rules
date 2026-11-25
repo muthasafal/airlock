@@ -1,78 +1,134 @@
 rules_version = '2';
+
+// Airlock Firestore rules (BRIEF §9.2). Org mode only; individuals use no Firestore.
+// Stats are counts only: integers that may only grow, under a fixed list of keys, so no
+// content (no strings, no per-message rows) can ever be stored. Tested with the emulator in
+// test/rules/firestore.rules.test.ts.
 service cloud.firestore {
   match /databases/{database}/documents {
-    
-    // Helper: check if user is an org member
-    function isMember(orgId) {
-      return exists(/databases/$(database)/documents/orgs/$(orgId)/members/$(request.auth.uid));
-    }
-    
-    // Helper: check if user is an org admin
+
+    function signedIn() { return request.auth != null; }
+    function memberPath(orgId, uid) { return /databases/$(database)/documents/orgs/$(orgId)/members/$(uid); }
+    function orgPath(orgId) { return /databases/$(database)/documents/orgs/$(orgId); }
+    function isMember(orgId) { return signedIn() && exists(memberPath(orgId, request.auth.uid)); }
     function isAdmin(orgId) {
-      return get(/databases/$(database)/documents/orgs/$(orgId)/members/$(request.auth.uid)).data.role == 'admin';
+      return isMember(orgId) && get(memberPath(orgId, request.auth.uid)).data.role == 'admin';
     }
-    
-    // Orgs
+
+    // A count under key k is absent, or an int that is >= its previous value (0 when new).
+    function okNum(n, o, k) {
+      return !(k in n) || (n[k] is int && n[k] >= 0 && n[k] >= o.get(k, 0));
+    }
+    function okCounts(n, o) {
+      return n is map
+          && n.keys().hasOnly(['EMAIL', 'PHONE', 'AADHAAR', 'PAN', 'IFSC', 'BANK_ACCOUNT', 'CARD', 'UPI', 'API_KEY', 'JWT', 'PRIVATE_KEY', 'PASSWORD', 'IP_ADDRESS', 'URL_SECRET', 'ORG_TERM', 'PERSON', 'ORG', 'LOCATION', 'HEALTH', 'FINANCIAL_AMOUNT', 'LEGAL_MATTER', 'INTERNAL_PROJECT', 'CREDENTIAL', 'GOVERNMENT_ID', 'DATE_OF_BIRTH', 'OTHER_SENSITIVE'])
+          && okNum(n, o, 'EMAIL')
+          && okNum(n, o, 'PHONE')
+          && okNum(n, o, 'AADHAAR')
+          && okNum(n, o, 'PAN')
+          && okNum(n, o, 'IFSC')
+          && okNum(n, o, 'BANK_ACCOUNT')
+          && okNum(n, o, 'CARD')
+          && okNum(n, o, 'UPI')
+          && okNum(n, o, 'API_KEY')
+          && okNum(n, o, 'JWT')
+          && okNum(n, o, 'PRIVATE_KEY')
+          && okNum(n, o, 'PASSWORD')
+          && okNum(n, o, 'IP_ADDRESS')
+          && okNum(n, o, 'URL_SECRET')
+          && okNum(n, o, 'ORG_TERM')
+          && okNum(n, o, 'PERSON')
+          && okNum(n, o, 'ORG')
+          && okNum(n, o, 'LOCATION')
+          && okNum(n, o, 'HEALTH')
+          && okNum(n, o, 'FINANCIAL_AMOUNT')
+          && okNum(n, o, 'LEGAL_MATTER')
+          && okNum(n, o, 'INTERNAL_PROJECT')
+          && okNum(n, o, 'CREDENTIAL')
+          && okNum(n, o, 'GOVERNMENT_ID')
+          && okNum(n, o, 'DATE_OF_BIRTH')
+          && okNum(n, o, 'OTHER_SENSITIVE');
+    }
+    function okRoutes(n, o) {
+      return n is map
+          && n.keys().hasOnly(['LOCAL_ANSWER', 'CLOUD_SCRUBBED', 'BLOCK'])
+          && okNum(n, o, 'LOCAL_ANSWER')
+          && okNum(n, o, 'CLOUD_SCRUBBED')
+          && okNum(n, o, 'BLOCK');
+    }
+    function okPolicy(p) {
+      return p is map && p.keys().hasOnly(['EMAIL', 'PHONE', 'AADHAAR', 'PAN', 'IFSC', 'BANK_ACCOUNT', 'CARD', 'UPI', 'API_KEY', 'JWT', 'PRIVATE_KEY', 'PASSWORD', 'IP_ADDRESS', 'URL_SECRET', 'ORG_TERM', 'PERSON', 'ORG', 'LOCATION', 'HEALTH', 'FINANCIAL_AMOUNT', 'LEGAL_MATTER', 'INTERNAL_PROJECT', 'CREDENTIAL', 'GOVERNMENT_ID', 'DATE_OF_BIRTH', 'OTHER_SENSITIVE']) && p.size() <= 26;
+    }
+
     match /orgs/{orgId} {
-      allow read: if request.auth != null && isMember(orgId);
-      allow create: if request.auth != null 
-                    && request.resource.data.createdBy == request.auth.uid;
-      allow update: if request.auth != null 
-                    && isAdmin(orgId)
-                    && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['policy', 'protectedTerms']);
-      
-      // Members
+      allow read: if isMember(orgId);
+
+      // Created together with the creator's admin membership in ONE batch (getAfter).
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly(['name', 'createdBy', 'createdAt', 'inviteCodeHash', 'policy', 'protectedTerms'])
+        && request.resource.data.createdBy == request.auth.uid
+        && request.resource.data.name is string && request.resource.data.name.size() > 0 && request.resource.data.name.size() <= 80
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.inviteCodeHash is string && request.resource.data.inviteCodeHash.matches('^[0-9a-f]{64}$')
+        && okPolicy(request.resource.data.policy)
+        && request.resource.data.protectedTerms is list && request.resource.data.protectedTerms.size() == 0
+        && getAfter(memberPath(orgId, request.auth.uid)).data.role == 'admin';
+
+      // Admins change only the policy and protected terms (admin-entered, never user content).
+      allow update: if isAdmin(orgId)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['policy', 'protectedTerms'])
+        && okPolicy(request.resource.data.policy)
+        && request.resource.data.protectedTerms is list && request.resource.data.protectedTerms.size() <= 500;
+
+      allow delete: if false;
+
       match /members/{uid} {
-        allow read: if request.auth != null && isMember(orgId);
-        // Create: require invite code hash to match org's hash. REVIEW §1: invite-code check.
-        allow create: if request.auth != null 
-                      && request.auth.uid == uid
-                      && request.resource.data.inviteCodeHash == get(/databases/$(database)/documents/orgs/$(orgId)).data.inviteCodeHash;
-        allow update: if request.auth != null && isAdmin(orgId);
+        allow read: if signedIn() && (request.auth.uid == uid || isMember(orgId));
+
+        allow create: if signedIn() && request.auth.uid == uid && (
+          // The creator becomes admin only in the same batch that creates the org.
+          (request.resource.data.keys().hasOnly(['role', 'joinedAt'])
+            && request.resource.data.role == 'admin'
+            && request.resource.data.joinedAt == request.time
+            && !exists(orgPath(orgId))
+            && getAfter(orgPath(orgId)).data.createdBy == request.auth.uid)
+          ||
+          // Anyone else joins as a member, and only with the right invite code (its hash).
+          (request.resource.data.keys().hasOnly(['role', 'joinedAt', 'inviteCodeHash'])
+            && request.resource.data.role == 'member'
+            && request.resource.data.joinedAt == request.time
+            && request.resource.data.inviteCodeHash == get(orgPath(orgId)).data.inviteCodeHash)
+        );
+
+        allow update: if false;
+        allow delete: if signedIn() && (request.auth.uid == uid || isAdmin(orgId));
       }
-      
-      // Stats - counts only, no content. REVIEW §1: create vs update, monotonic increments.
+
+      // Daily counts only: { counts: {CATEGORY: int}, requests: int, routes: {ROUTE: int} }.
       match /stats/{date} {
-        // Create: allow if all fields are numeric. REVIEW §1: handle null resource on create.
-        allow create: if request.auth != null 
-                      && isMember(orgId)
-                      && request.resource.data.keys().hasOnly(['counts', 'requests', 'routes'])
-                      && request.resource.data.counts is map && request.resource.data.requests is int && request.resource.data.routes is map;
-        
-        // Update: members can only increment numeric fields with monotonic check. REVIEW §1: int + >= old value.
-        allow update: if request.auth != null 
-                      && isMember(orgId)
-                      && request.resource.data.diff(resource.data).affectedKeys()
-                         .hasOnly(['counts', 'requests', 'routes'])
-                      && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['counts']) 
-                          || (request.resource.data.counts.keys().hasOnly([
-                               'EMAIL', 'PHONE', 'AADHAAR', 'PAN', 'IFSC', 'BANK_ACCOUNT',
-                               'CARD', 'UPI', 'API_KEY', 'JWT', 'PRIVATE_KEY', 'PASSWORD',
-                               'IP_ADDRESS', 'URL_SECRET', 'ORG_TERM', 'PERSON', 'ORG',
-                               'LOCATION', 'HEALTH', 'FINANCIAL_AMOUNT', 'LEGAL_MATTER',
-                               'INTERNAL_PROJECT', 'CREDENTIAL', 'GOVERNMENT_ID', 'DATE_OF_BIRTH',
-                               'OTHER_SENSITIVE'
-                             ])
-                              && request.resource.data.counts.keys().toList().all(key => 
-                                 request.resource.data.counts[key] is int 
-                                 && request.resource.data.counts[key] >= resource.data.counts.get(key, 0))))
-                      && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['requests'])
-                          || (request.resource.data.requests is int 
-                              && request.resource.data.requests >= resource.data.requests))
-                      && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['routes'])
-                          || (request.resource.data.routes.keys().hasOnly(['LOCAL_ANSWER', 'CLOUD_SCRUBBED', 'BLOCK'])
-                              && request.resource.data.routes.keys().toList().all(key =>
-                                 request.resource.data.routes[key] is int
-                                 && request.resource.data.routes[key] >= resource.data.routes.get(key, 0))));
-        
-        allow read: if request.auth != null && isAdmin(orgId);
+        allow read: if isAdmin(orgId);
+
+        allow create: if isMember(orgId)
+          && date.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+          && request.resource.data.keys().hasOnly(['counts', 'requests', 'routes'])
+          && okCounts(request.resource.data.get('counts', {}), {})
+          && okRoutes(request.resource.data.get('routes', {}), {})
+          && (!('requests' in request.resource.data) || (request.resource.data.requests is int && request.resource.data.requests >= 0));
+
+        allow update: if isMember(orgId)
+          && request.resource.data.keys().hasOnly(['counts', 'requests', 'routes'])
+          && okCounts(request.resource.data.get('counts', {}), resource.data.get('counts', {}))
+          && okRoutes(request.resource.data.get('routes', {}), resource.data.get('routes', {}))
+          && (!('requests' in request.resource.data)
+              || (request.resource.data.requests is int && request.resource.data.requests >= resource.data.get('requests', 0)));
+
+        allow delete: if false;
       }
     }
-    
-    // Deny everything else
+
+    // Deny everything else.
     match /{document=**} {
       allow read, write: if false;
     }
   }
 }
-

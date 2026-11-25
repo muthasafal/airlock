@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "name": "Docs sync",
+  "description": "Manual: bring README.md in line with the specs and code.",
+  "version": "1",
+  "when": {
+    "type": "userTriggered"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Update the README.md sections (features, architecture, how Firebase AI Logic is used with file links, privacy guarantees, setup including the Chrome flag) to match the current .kiro/specs and the code. Keep the honest tooling line and the license section. No em dashes."
+  }
+}

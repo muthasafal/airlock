@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "name": "Privacy review on stop",
+  "description": "When the agent stops, review the session's changes against the privacy invariants.",
+  "version": "1",
+  "when": {
+    "type": "agentStop"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Review the changes in this session for any code path that could send raw text, findings or mappings to the network, the console or storage other than the encrypted vault (apps/web/src/lib/vault.ts). Check against .kiro/steering/privacy-invariants.md. Only scrubbed text (the ScrubbedText type) may reach lib/cloud-client.ts. Report file:line for each problem, or say none found."
+  }
+}

@@ -12,14 +12,16 @@
     "build": "npm run build -w packages/scrub-engine && npm run build -w packages/nano-detector && npm run build -w apps/web",
     "test": "vitest --passWithNoTests",
     "test:props": "npm run test:props -w packages/scrub-engine",
-    "test:unit": "vitest run --passWithNoTests",
+    "test:unit": "vitest run",
     "test:e2e": "playwright test",
     "typecheck": "tsc -b",
     "lint": "eslint . --max-warnings 0",
     "preview": "npm run preview -w apps/web",
-    "deploy": "npm run build && firebase deploy"
+    "deploy": "npm run build && firebase deploy",
+    "test:rules": "firebase emulators:exec --only firestore --project airlock-rules-test \"vitest run --config vitest.rules.config.ts\""
   },
   "devDependencies": {
+    "@firebase/rules-unit-testing": "^6.0.0",
     "@playwright/test": "^1.48.0",
     "@types/node": "^22.9.0",
     "@typescript-eslint/eslint-plugin": "^8.13.0",

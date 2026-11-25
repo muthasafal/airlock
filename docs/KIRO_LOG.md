@@ -111,3 +111,23 @@ Built with Kiro. Styled by hand. Zero external UI frameworks. Ready for feature 
 - Secret categories (keys, tokens, passwords) always take over the merged span.
 
 After the fixes, all 9 properties pass on repeated runs.
+
+## 2026-11-26 - Web pipeline, org mode, rules tests, Kiro tooling (implemented with Claude Code)
+
+Kiro is out of monthly credits, so Claude Code implemented the following inside Kiro's architecture-skeleton stubs, following its design.md. This is Claude-authored code:
+- **nano-detector:** Firebase AI Logic hybrid models with option names checked against the installed firebase 13.4 typings:
+  - `InferenceMode.ONLY_ON_DEVICE`
+  - `onDeviceParams.createOptions.initialPrompts` for the BRIEF system prompt
+  - `onDeviceParams.promptOptions.responseConstraint` for the exact BRIEF JSON schema
+  - `inCloudParams`
+
+  Plus chunking (4,000 / 200), span resolution, the 8 s timeout leading to Reduced protection, task classification, and on-device answers. 11 tests.
+- **Web logic:** App Check (debug token in dev), Remote Config (all 9 keys), Auth, Firestore, the AES-GCM vault with a non-extractable key and TTL, local receipts, settings, the §8.4 router with plain-English reasons, the ONLY_IN_CLOUD client with streaming restore, and the session pipeline. Kiro's pages are now wired to real hooks, keeping Kiro's markup and classes.
+- **Org mode:** an atomic create-and-admin batch, joining by invite-code hash, a policy and terms editor (minimal markup reusing Kiro's classes, because Kiro's editors were placeholders), and a counts-only stats dashboard.
+- **firestore.rules:** rewritten, because the skeleton's `.toList().all()` isn't valid in the rules language. 15 emulator tests (`npm run test:rules`) cover create vs update, int and monotonic counters, invite codes, atomic admin, and no content.
+- **Kiro tooling (BRIEF §12):**
+  - 5 hooks in `.kiro/hooks/*.kiro.hook`, using trigger names confirmed from Kiro's own hook schema: promptSubmit, fileEdited, postTaskExecution, agentStop, userTriggered.
+  - 2 custom agents in `.kiro/agents/`.
+  - `.kiro/settings/mcp.json` (Firebase, Playwright, GitHub; no tokens in the file).
+
+  The secret guard reads `USER_PROMPT`, which Kiro sets for prompt hooks, and exits 2 on a real key. It was tested from the shell.

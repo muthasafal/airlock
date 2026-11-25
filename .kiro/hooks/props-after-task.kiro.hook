@@ -1,0 +1,14 @@
+{
+  "enabled": true,
+  "name": "PBT after task",
+  "description": "After every spec task, run the 9 scrub-engine correctness properties (fast-check, 1,000 runs each).",
+  "version": "1",
+  "when": {
+    "type": "postTaskExecution"
+  },
+  "then": {
+    "type": "runCommand",
+    "command": "npm run test:props -w packages/scrub-engine",
+    "timeout": 300
+  }
+}
