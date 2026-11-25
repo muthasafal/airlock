@@ -1,6 +1,10 @@
 ---
 inclusion: always
 ---
+---
+loadMode: always
+---
+
 # Privacy Invariants
 
 These are MUST requirements. Every one becomes a property-based test and a manual review checkpoint.

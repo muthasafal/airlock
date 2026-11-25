@@ -46,6 +46,8 @@ The app will open at `http://localhost:5173`.
 
 [Architecture diagram coming soon]
 
+[Architecture diagram coming soon]
+
 ## Privacy guarantees
 
 - No server, including ours, ever sees raw sensitive values

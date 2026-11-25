@@ -2,9 +2,12 @@
 inclusion: fileMatch
 fileMatchPattern: "apps/web/src/**/*.{tsx,ts,css}"
 ---
-# Design Language
+---
+loadMode: fileMatch
+fileMatch: apps/web/src/**/*.{tsx,css}
+---
 
-**FileMatch**: `apps/web/src/**/*.{tsx,css}`
+# Design Language
 
 This steering applies to all UI components and styles in the web app.
 

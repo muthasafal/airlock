@@ -1,6 +1,10 @@
 ---
 inclusion: always
 ---
+---
+loadMode: always
+---
+
 # Project Structure
 
 ## Monorepo layout (npm workspaces)
