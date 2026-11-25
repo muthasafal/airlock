@@ -1,0 +1,112 @@
+.clipboard-airlock {
+  max-width: 700px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.clipboard-title {
+  font-size: var(--font-size-3xl);
+  margin: 0 0 var(--space-4) 0;
+  color: var(--color-slate-900);
+}
+
+.clipboard-description {
+  font-size: var(--font-size-base);
+  color: var(--color-slate-700);
+  margin: 0;
+  line-height: var(--line-height-normal);
+}
+
+.clipboard-step {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-6);
+  background: white;
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-md);
+}
+
+.clipboard-step h2 {
+  font-size: var(--font-size-2xl);
+  margin: 0;
+  color: var(--color-slate-900);
+}
+
+.clipboard-input,
+.clipboard-answer-input {
+  min-height: 150px;
+  padding: var(--space-4);
+  font-size: var(--font-size-base);
+  border: 2px solid var(--color-sky-200);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-body);
+  resize: vertical;
+}
+
+.clipboard-input:focus,
+.clipboard-answer-input:focus {
+  outline: none;
+  border-color: var(--color-action);
+  box-shadow: 0 0 0 3px var(--color-action-light);
+}
+
+.clipboard-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: white;
+  background-color: var(--color-action);
+  border: none;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--easing-out-expo);
+  min-height: 44px;
+  box-shadow: var(--shadow-md);
+}
+
+.clipboard-button:hover:not(:disabled) {
+  background-color: var(--color-action-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.clipboard-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.clipboard-hint {
+  font-size: var(--font-size-sm);
+  color: var(--color-slate-600);
+  margin: 0;
+  font-style: italic;
+}
+
+.clipboard-restored-output {
+  padding: var(--space-4);
+  background-color: var(--color-success-light);
+  border: 1px solid var(--color-emerald-200);
+  border-radius: var(--radius-lg);
+  min-height: 100px;
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  color: var(--color-slate-900);
+  word-break: break-word;
+}
+
+@media (max-width: 768px) {
+  .clipboard-step {
+    padding: var(--space-4);
+  }
+
+  .clipboard-title {
+    font-size: var(--font-size-2xl);
+  }
+}

@@ -1,0 +1,46 @@
+.route-picker {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.route-picker-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-slate-700);
+  white-space: nowrap;
+}
+
+.route-picker-select {
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-size-sm);
+  border: 2px solid var(--color-sky-200);
+  border-radius: var(--radius-md);
+  background-color: white;
+  color: var(--color-slate-900);
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--easing-out-expo);
+  min-height: 44px;
+}
+
+.route-picker-select:hover {
+  border-color: var(--color-sky-300);
+}
+
+.route-picker-select:focus {
+  outline: none;
+  border-color: var(--color-action);
+  box-shadow: 0 0 0 3px var(--color-action-light);
+}
+
+@media (max-width: 768px) {
+  .route-picker {
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .route-picker-select {
+    width: 100%;
+  }
+}

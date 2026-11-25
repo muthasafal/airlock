@@ -1,120 +1,240 @@
-/* Design tokens for Airlock */
+@import '@fontsource/baloo-2';
+@import '@fontsource/nunito';
+@import '@fontsource/caveat';
 
 :root {
+  /* Color palette: cool pale sky with deep slate ink */
+  --color-sky-50: #f0f9ff;
+  --color-sky-100: #e0f2fe;
+  --color-sky-200: #bae6fd;
+  --color-sky-300: #7dd3fc;
+  --color-sky-400: #38bdf8;
+  --color-sky-500: #0ea5e9;
+  --color-sky-600: #0284c7;
+  --color-sky-700: #0369a1;
+  --color-sky-900: #0c2d6b;
+
+  --color-slate-50: #f8fafc;
+  --color-slate-100: #f1f5f9;
+  --color-slate-200: #e2e8f0;
+  --color-slate-300: #cbd5e1;
+  --color-slate-400: #94a3b8;
+  --color-slate-500: #64748b;
+  --color-slate-600: #475569;
+  --color-slate-700: #334155;
+  --color-slate-800: #1e293b;
+  --color-slate-900: #0f172a;
+
+  --color-emerald-100: #d1fae5;
+  --color-emerald-200: #a7f3d0;
+  --color-emerald-500: #10b981;
+  --color-emerald-600: #059669;
+
+  --color-amber-50: #fffbeb;
+  --color-amber-100: #fef3c7;
+  --color-amber-500: #f59e0b;
+
+  --color-red-100: #fee2e2;
+  --color-red-200: #fecaca;
+  --color-red-500: #ef4444;
+  --color-red-600: #dc2626;
+
+  --color-purple-100: #f3e8ff;
+  --color-purple-500: #a855f7;
+
+  --color-pink-100: #fce7f3;
+  --color-pink-500: #ec4899;
+
+  /* Semantic colors */
+  --color-action: var(--color-sky-600);
+  --color-action-hover: var(--color-sky-700);
+  --color-action-light: var(--color-sky-100);
+
+  --color-success: var(--color-emerald-600);
+  --color-success-light: var(--color-emerald-100);
+
+  --color-error: var(--color-red-600);
+  --color-error-light: var(--color-red-100);
+
+  --color-warning: var(--color-amber-500);
+  --color-warning-light: var(--color-amber-50);
+
+  /* Category semantic colors (subtle) */
+  --color-category-credential: var(--color-purple-100);
+  --color-category-person: var(--color-pink-100);
+  --color-category-org: var(--color-sky-100);
+  --color-category-financial: var(--color-amber-50);
+  --color-category-health: var(--color-red-100);
+  --color-category-location: var(--color-emerald-100);
+  --color-category-document: var(--color-slate-100);
+
   /* Typography */
   --font-display: 'Baloo 2', system-ui, sans-serif;
   --font-body: 'Nunito', system-ui, sans-serif;
   --font-accent: 'Caveat', cursive;
 
-  /* Palette: cool pale mint ground, deep ink, action teal, success green */
-  --color-ground: #edf7f4;
-  --color-ink: #1a2e28;
-  --color-action: #0d7a5f;
-  --color-success: #2e7d55;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.875rem;
+  --font-size-4xl: 2.25rem;
 
-  /* Semantic category colors (subtle) */
-  --color-cat-person: #c8e6c9;
-  --color-cat-credential: #ffccbc;
-  --color-cat-email: #e1f5fe;
-  --color-cat-phone: #f3e5f5;
-  --color-cat-financial: #fff9c4;
-  --color-cat-health: #fce4ec;
-  --color-cat-location: #e0f2f1;
-  --color-cat-org: #ede7f6;
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
 
-  /* Shape */
-  --radius-sm: 12px;
-  --radius-card: 28px;
-  --radius-card-lg: 34px;
+  --font-weight-normal: 400;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Spacing */
+  --space-0: 0;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+
+  /* Border radius */
+  --radius-sm: 0.5rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.5rem;
+  --radius-xl: 2rem;
+  --radius-2xl: 2.5rem;
+  --radius-3xl: 3rem;
   --radius-pill: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+  /* Tinted shadows (soft blue tint) */
+  --shadow-tint: 0 10px 25px -5px rgba(2, 132, 199, 0.15);
 
   /* Motion */
   --easing-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-  --easing-in-out: cubic-bezier(0.4, 0, 0.2, 1);
-  --duration-quick: 150ms;
-  --duration-default: 280ms;
+  --duration-fast: 200ms;
+  --duration-normal: 300ms;
   --duration-slow: 400ms;
-
-  /* Shadows */
-  --shadow-sm: 0 2px 8px rgba(26, 46, 40, 0.08);
-  --shadow-md: 0 4px 16px rgba(26, 46, 40, 0.12);
-  --shadow-lg: 0 8px 32px rgba(26, 46, 40, 0.16);
-
-  /* Spacing scale */
-  --space-xs: 4px;
-  --space-sm: 8px;
-  --space-md: 16px;
-  --space-lg: 24px;
-  --space-xl: 32px;
-  --space-2xl: 48px;
 }
 
-/* Self-hosted font stubs (files added in later spec) */
-@font-face {
-  font-family: 'Baloo 2';
-  src: url('/fonts/Baloo2-Regular.woff2') format('woff2');
-  font-weight: 400;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Baloo 2';
-  src: url('/fonts/Baloo2-Bold.woff2') format('woff2');
-  font-weight: 700;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Nunito';
-  src: url('/fonts/Nunito-Regular.woff2') format('woff2');
-  font-weight: 400;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Nunito';
-  src: url('/fonts/Nunito-Bold.woff2') format('woff2');
-  font-weight: 700;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Caveat';
-  src: url('/fonts/Caveat-Regular.woff2') format('woff2');
-  font-weight: 400;
-  font-display: swap;
-}
-
-/* Global styles */
 * {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  margin: 0;
-  padding: 0;
   font-family: var(--font-body);
-  background-color: var(--color-ground);
-  color: var(--color-ink);
-  line-height: 1.5;
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  color: var(--color-slate-900);
+  background-color: var(--color-sky-50);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+}
+
+h1 {
+  font-size: var(--font-size-4xl);
+}
+
+h2 {
+  font-size: var(--font-size-3xl);
+}
+
+h3 {
+  font-size: var(--font-size-2xl);
+}
+
+h4 {
+  font-size: var(--font-size-xl);
+}
+
+a {
+  color: var(--color-action);
+  text-decoration: none;
+  font-weight: var(--font-weight-semibold);
+  transition: color var(--duration-fast) var(--easing-out-expo);
+}
+
+a:hover {
+  color: var(--color-action-hover);
+}
+
+a:focus-visible {
+  outline: 2px solid var(--color-action);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
 }
 
 button {
-  border: none;
   font-family: var(--font-body);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  border: none;
   cursor: pointer;
-  transition: all var(--duration-default) var(--easing-out-expo);
+  transition: all var(--duration-fast) var(--easing-out-expo);
 }
 
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+button:focus-visible {
+  outline: 2px solid var(--color-action);
+  outline-offset: 2px;
+}
+
+input, textarea, select {
+  font-family: var(--font-body);
+  font-size: var(--font-size-base);
+  color: var(--color-slate-900);
+  border: 2px solid var(--color-slate-200);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  transition: border-color var(--duration-fast) var(--easing-out-expo);
+}
+
+input:focus-visible, textarea:focus-visible, select:focus-visible {
+  outline: none;
+  border-color: var(--color-action);
+  box-shadow: 0 0 0 3px var(--color-action-light);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Utility classes for reduced motion */
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

@@ -1,0 +1,50 @@
+.airlock-chamber-svg {
+  width: 100%;
+  height: 100%;
+  max-width: 320px;
+  max-height: 240px;
+}
+
+.static-chamber-diagram {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  padding: var(--space-6);
+  background: white;
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-md);
+}
+
+.chamber-steps {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.chamber-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  flex: 1;
+  min-width: 80px;
+}
+
+.chamber-step-icon {
+  font-size: var(--font-size-3xl);
+}
+
+.chamber-step-label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  text-align: center;
+  color: var(--color-slate-600);
+}
+
+.chamber-status-label {
+  text-align: center;
+  font-size: var(--font-size-sm);
+  color: var(--color-slate-500);
+  font-style: italic;
+}

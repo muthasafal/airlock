@@ -1,13 +1,12 @@
-import { Policy } from '@airlock/scrub-engine';
+import React from 'react';
 
-interface PolicyEditorProps {
-  policy: Policy;
-  onSave: (p: Policy) => void;
-}
-
-/**
- * Editor for org category policies (admin only). BRIEF §P1-1.
- */
-export default function PolicyEditor(_props: PolicyEditorProps): React.JSX.Element {
-  throw new Error('not implemented: architecture-skeleton');
+export default function PolicyEditor(): React.JSX.Element {
+  return (
+    <div>
+      <h3>Category Policies</h3>
+      <p>Set actions for each category: PSEUDONYMIZE, GENERALIZE, BLOCK, KEEP.</p>
+      {/* TODO(policy-editor): implement policy form */}
+      <p>Editor coming soon.</p>
+    </div>
+  );
 }

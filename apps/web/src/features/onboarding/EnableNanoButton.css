@@ -1,0 +1,52 @@
+.enable-nano-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-6);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: white;
+  background-color: var(--color-action);
+  border: none;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--easing-out-expo);
+  min-height: 44px;
+  box-shadow: var(--shadow-md);
+}
+
+.enable-nano-button:hover:not(:disabled) {
+  background-color: var(--color-action-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.enable-nano-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.enable-nano-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.enable-nano-button:focus-visible {
+  outline: 2px solid var(--color-action);
+  outline-offset: 2px;
+}
+
+.enable-nano-icon {
+  font-size: var(--font-size-lg);
+}
+
+.enable-nano-spinner {
+  display: inline-block;
+  font-size: var(--font-size-lg);
+}
+
+@media (max-width: 768px) {
+  .enable-nano-button {
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--font-size-sm);
+  }
+}

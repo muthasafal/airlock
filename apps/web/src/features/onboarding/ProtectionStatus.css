@@ -1,0 +1,119 @@
+.protection-status {
+  display: flex;
+  gap: var(--space-4);
+  padding: var(--space-6);
+  border-radius: var(--radius-2xl);
+  background: white;
+  box-shadow: var(--shadow-md);
+  border-left: 4px solid var(--color-slate-300);
+  position: relative;
+  overflow: hidden;
+}
+
+.protection-status--full {
+  border-left-color: var(--color-success);
+  background-color: var(--color-success-light);
+}
+
+.protection-status--reduced {
+  border-left-color: var(--color-warning);
+  background-color: var(--color-warning-light);
+}
+
+.protection-status--unavailable {
+  border-left-color: var(--color-error);
+  background-color: var(--color-error-light);
+}
+
+.protection-status-icon {
+  font-size: var(--font-size-3xl);
+  flex-shrink: 0;
+  min-width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.protection-status--full .protection-status-icon {
+  color: var(--color-success);
+}
+
+.protection-status--reduced .protection-status-icon {
+  color: var(--color-warning);
+}
+
+.protection-status--unavailable .protection-status-icon {
+  color: var(--color-error);
+}
+
+.protection-status-text {
+  flex: 1;
+}
+
+.protection-status-title {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--space-2);
+  color: var(--color-slate-900);
+}
+
+.protection-status-description {
+  font-size: var(--font-size-sm);
+  color: var(--color-slate-700);
+  margin-bottom: var(--space-3);
+  line-height: var(--line-height-normal);
+}
+
+.protection-status-info {
+  font-size: var(--font-size-xs);
+  color: var(--color-slate-600);
+  font-style: italic;
+  margin-top: var(--space-2);
+}
+
+.protection-status-steps {
+  margin-top: var(--space-4);
+  padding: var(--space-4);
+  background-color: white;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-slate-200);
+}
+
+.protection-status-steps ol {
+  margin-left: var(--space-5);
+  color: var(--color-slate-700);
+  font-size: var(--font-size-sm);
+}
+
+.protection-status-steps li {
+  margin-bottom: var(--space-2);
+  line-height: var(--line-height-normal);
+}
+
+.protection-status-steps code {
+  background-color: var(--color-slate-100);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: var(--font-size-xs);
+  color: var(--color-slate-800);
+}
+
+.protection-status-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-action), var(--color-success));
+  border-radius: var(--radius-pill);
+}
+
+.protection-status-progress-text {
+  position: absolute;
+  right: var(--space-2);
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-slate-900);
+}

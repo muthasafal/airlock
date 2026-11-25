@@ -1,0 +1,126 @@
+.create-join {
+  padding: var(--space-6);
+  background: white;
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-sm);
+}
+
+.create-join-choice {
+  display: flex;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.create-join-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-6);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: white;
+  background-color: var(--color-action);
+  border: none;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--easing-out-expo);
+  min-height: 44px;
+  box-shadow: var(--shadow-md);
+}
+
+.create-join-button:hover {
+  background-color: var(--color-action-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.create-join-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  max-width: 400px;
+}
+
+.create-join-form label {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-slate-900);
+}
+
+.create-join-form input {
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--font-size-base);
+  border: 2px solid var(--color-sky-200);
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+}
+
+.create-join-form input:focus {
+  outline: none;
+  border-color: var(--color-action);
+  box-shadow: 0 0 0 3px var(--color-action-light);
+}
+
+.create-join-actions {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.create-join-submit,
+.create-join-cancel {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-3) var(--space-5);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  border: none;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--easing-out-expo);
+  min-height: 44px;
+}
+
+.create-join-submit {
+  color: white;
+  background-color: var(--color-action);
+  box-shadow: var(--shadow-sm);
+}
+
+.create-join-submit:hover:not(:disabled) {
+  background-color: var(--color-action-hover);
+  transform: translateY(-2px);
+}
+
+.create-join-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.create-join-cancel {
+  color: var(--color-slate-700);
+  background-color: var(--color-slate-100);
+}
+
+.create-join-cancel:hover {
+  background-color: var(--color-slate-200);
+}
+
+@media (max-width: 768px) {
+  .create-join-choice {
+    flex-direction: column;
+  }
+
+  .create-join-button {
+    width: 100%;
+  }
+
+  .create-join-actions {
+    width: 100%;
+  }
+
+  .create-join-submit,
+  .create-join-cancel {
+    flex: 1;
+  }
+}
