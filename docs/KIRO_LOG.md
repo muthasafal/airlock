@@ -61,21 +61,18 @@ Created `packages/scrub-engine/src/types.ts` with:
 - Route structure ready for all features
 
 ### 8. Documentation
-- `LICENSE`: Apache-2.0
+- `LICENSE`: Apache-2.0 (Copyright 2026 Safal Mutha)
 - `README.md`: Project overview, quick start, privacy guarantees
 - `SETUP_COMPLETE.md`: Next steps and build order
 - `.kiro/specs/README.md`: Spec template and recommended order
 - This log file
 
 ### 9. Git commits
-Three commits:
-1. "Initial setup: monorepo structure, Firebase config, Kiro steering"
-2. "Add setup documentation and starter files"
-3. "Add specs directory README"
+Initial commits with complete structure.
 
 **What changed:**
 - Complete project from zero to ready-to-build
-- 335 npm packages installed
+- 335+ npm packages installed
 - Full `.kiro/` directory structure committed
 - All steering docs aligned with the 15-page brief
 - Ready for P0 feature development
@@ -87,7 +84,70 @@ Three commits:
 - Test infrastructure includes PBT from day one
 - Design language encoded in steering (warm, rounded, motion with reduced-motion support)
 
-**Next step:** Create first spec (`scrub-engine.md`) and start building detectors with PBT
+---
+
+## 2026-11-25 - Review Fixes and Quality Improvements
+
+**What I asked:** "Check this file [REVIEW.md], found some issues, either solve them now if possible or store them in wherever you store todos for a later stage"
+
+**What Kiro did:**
+
+### Immediate fixes applied:
+1. **YAML front matter added to all steering docs**
+   - Prevents loading full brief on every request (saves credits)
+   - `brief.md`: loadMode manual (only with `#brief`)
+   - `design.md`: fileMatch for `apps/web/src/**/*.{tsx,css}`
+   - Others: loadMode always
+   
+2. **Build errors fixed**
+   - Created `nano-detector/src/index.ts` placeholder (tsc now succeeds)
+   - Added `apps/web/src/vite-env.d.ts` for Vite types
+   - Commented out non-existent exports in scrub-engine until spec creates them
+
+3. **Lint configuration complete**
+   - Created `eslint.config.js` with flat config
+   - Added typescript-eslint, react-hooks, react-refresh plugins
+   - Created `.prettierrc` with project style
+   - `npm run lint` now works
+
+4. **Test scripts hardened**
+   - Added `--passWithNoTests` to prevent failures before tests exist
+   - Added `typecheck` script using `tsc -b`
+
+5. **Documentation polish**
+   - Restored architecture diagram placeholder in README
+   - Dates corrected to 2026 throughout
+
+### Issues documented for later (`.kiro/TODO.md`):
+1. **Firestore rules security bugs** (CRITICAL - for org-mode spec):
+   - Create vs update handling broken
+   - No numeric validation on stats
+   - Invite code bypass vulnerability
+   - Atomicity issue on org creation
+   - Needs comprehensive emulator tests
+
+2. **CSP headers** (for firebase-platform spec):
+   - App Check reCAPTCHA needs Google domains
+   - Self-host fonts to keep strict font-src
+   - Replace connect-src wildcards with exact endpoints
+
+3. **Kiro configuration** (for P1, judged in Kiroween):
+   - 5 hooks to create (secret-guard, test-on-save, etc.)
+   - 2 custom agents (leak-auditor, copy-editor)
+   - 3 MCP servers (Firebase, Playwright, GitHub)
+
+4. **Pre-submission polish**:
+   - Delete SETUP_COMPLETE.md
+   - Create architecture diagram
+
+**What changed:**
+- TypeScript now compiles cleanly (`npm run typecheck` passes)
+- Linting infrastructure complete
+- All review findings either fixed or tracked
+- Steering docs optimized for token efficiency
+- TODO.md provides clear roadmap for security fixes
+
+**Next step:** Start building P0 features with first spec (scrub-engine.md)
 
 ---
 
