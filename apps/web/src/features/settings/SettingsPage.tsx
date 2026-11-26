@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ALL_CATEGORIES, DEFAULT_POLICY, type Action } from '@airlock/scrub-engine';
 import { useSettings } from './useSettings';
+import { CLOUD_MODEL_OPTIONS, NANO_WAIT_OPTIONS, type CloudModelChoice } from '../../lib/settings';
 import './SettingsPage.css';
 
 const ACTIONS: Action[] = ['PSEUDONYMIZE', 'GENERALIZE', 'BLOCK', 'KEEP'];
@@ -41,6 +42,43 @@ export default function SettingsPage(): React.JSX.Element {
             <span>hours</span>
           </div>
           <p className="settings-field-help">Default is 24 hours. After this time, local session mappings are deleted automatically.</p>
+        </div>
+      </div>
+
+      <div className="settings-section">
+        <h2 className="settings-section-title">Models</h2>
+        <div className="settings-field">
+          <label htmlFor="cloud-model">Cloud model for answers:</label>
+          <select
+            id="cloud-model"
+            value={settings.cloudModel}
+            onChange={(e) => update({ cloudModel: e.target.value as CloudModelChoice })}
+          >
+            {CLOUD_MODEL_OPTIONS.map((o) => (
+              <option key={o.value} value={o.value}>
+                {o.label}
+              </option>
+            ))}
+          </select>
+          <p className="settings-field-help">It only ever sees the cleaned text with stand-ins, whichever you pick.</p>
+        </div>
+        <div className="settings-field">
+          <label htmlFor="nano-wait">Give the private on-device model up to:</label>
+          <select
+            id="nano-wait"
+            value={settings.nanoWaitSeconds}
+            onChange={(e) => update({ nanoWaitSeconds: Number(e.target.value) })}
+          >
+            {NANO_WAIT_OPTIONS.map((s) => (
+              <option key={s} value={s}>
+                {s} seconds{s === 8 ? ' (quick)' : s === 20 ? ' (default)' : ' (thorough, slower laptops)'}
+              </option>
+            ))}
+          </select>
+          <p className="settings-field-help">
+            Gemini Nano checks every message on this laptop before anything leaves. If it takes longer than this, we fall back to our rule
+            checks and ask you before sending.
+          </p>
         </div>
       </div>
 

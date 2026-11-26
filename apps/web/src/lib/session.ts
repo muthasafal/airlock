@@ -204,7 +204,7 @@ function detectors(onProgress?: (pct: number) => void): { list: Detector[]; nano
   const models = getNanoModels();
   const nano =
     nanoReady() && models
-      ? new NanoDetector(models.detect, { chunkChars: getRemoteConfigValues().chunk_chars, timeoutMs: 8000, onProgress })
+      ? new NanoDetector(models.detect, { chunkChars: getRemoteConfigValues().chunk_chars, timeoutMs: getSettings().nanoWaitSeconds * 1000, onProgress })
       : null;
   return { list: nano ? [rulesDetector, nano] : [rulesDetector], nano };
 }
@@ -304,6 +304,10 @@ export async function submitMessage(text: string, override: RouteOverride = 'AUT
   set({ busy: true, chamberState: 'scrubbing', turns: [...state.turns, turn] });
 
   try {
+    // If the private model is still warming up, let it finish first (bounded by the wait setting).
+    if (warmed && nanoReady()) {
+      await Promise.race([warmed, sleep(getSettings().nanoWaitSeconds * 1000)]);
+    }
     const s = await scrubForSession(text);
     const rc = getRemoteConfigValues();
     const models = getNanoModels();
@@ -327,8 +331,8 @@ export async function submitMessage(text: string, override: RouteOverride = 'AUT
       userOverride: override,
       blockRequestOnSecret: rc.block_request_on_secret,
       localAnswerMaxChars: rc.local_answer_max_chars,
-      cloudModel: rc.cloud_model,
-      cloudModelHard: rc.cloud_model_hard,
+      cloudModel: getSettings().cloudModel === 'auto' ? rc.cloud_model : getSettings().cloudModel,
+      cloudModelHard: getSettings().cloudModel === 'auto' ? rc.cloud_model_hard : getSettings().cloudModel,
     });
     updateTurn(id, {
       originalFindings: s.findings,

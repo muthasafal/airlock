@@ -12,6 +12,7 @@ import {
 import { NanoDetector } from '@airlock/nano-detector';
 import { getNanoModels } from '../firebase/ai';
 import { getRemoteConfigValues } from '../firebase/remoteConfig';
+import { getSettings } from './settings';
 
 /**
  * Leak benchmark (BRIEF §P1-2). A deterministic, seeded generator produces synthetic documents
@@ -141,7 +142,7 @@ const overlaps = (f: Finding, text: string, value: string) => {
 /** Runs one configuration over the documents and scores it per category. */
 export async function runConfig(docs: BenchDoc[], config: BenchConfig, onProgress?: (done: number) => void): Promise<ConfigResult> {
   const models = getNanoModels();
-  const nano = config === 'rules+nano' && models ? new NanoDetector(models.detect, { timeoutMs: 8000, chunkChars: getRemoteConfigValues().chunk_chars }) : null;
+  const nano = config === 'rules+nano' && models ? new NanoDetector(models.detect, { timeoutMs: getSettings().nanoWaitSeconds * 1000, chunkChars: getRemoteConfigValues().chunk_chars }) : null;
   if (config === 'rules+nano' && !nano) {
     return { config, available: false, avgLatencyMs: 0, categories: [], totalPlanted: 0, totalLeaked: 0 };
   }
