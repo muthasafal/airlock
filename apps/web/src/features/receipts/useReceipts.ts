@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useSyncExternalStore } from 'react';
 import { clearReceipts, deleteReceipt, listReceipts, onReceiptsChanged, type Receipt } from '../../lib/receipts';
-import { restoreForSession, sessionStore } from '../../lib/session';
+import { initSession, restoreForSession, sessionStore } from '../../lib/session';
 
 export interface UseReceiptsHook {
   receipts: Receipt[];
@@ -17,6 +17,11 @@ export interface UseReceiptsHook {
  */
 export function useReceipts(): UseReceiptsHook {
   const [receipts, setReceipts] = useState<Receipt[]>([]);
+  // The vault mapping is needed to rebuild the originals side of the diff.
+  const session = useSyncExternalStore(sessionStore.subscribe, sessionStore.getSnapshot);
+  useEffect(() => {
+    void initSession();
+  }, []);
   useEffect(() => {
     let alive = true;
     const load = () => void listReceipts().then((r) => alive && setReceipts(r)).catch(() => undefined);
@@ -36,10 +41,13 @@ export function useReceipts(): UseReceiptsHook {
     a.click();
     URL.revokeObjectURL(url);
   }, [receipts]);
-  const originalFor = useCallback((r: Receipt) => {
-    if (!r.outboundPayload) return null;
-    if (r.sessionId !== sessionStore.getSnapshot().sessionId) return null;
-    return restoreForSession(r.outboundPayload).text;
-  }, []);
+  const originalFor = useCallback(
+    (r: Receipt) => {
+      if (!r.outboundPayload || !session.ready) return null;
+      if (r.sessionId !== session.sessionId) return null;
+      return restoreForSession(r.outboundPayload).text;
+    },
+    [session.ready, session.sessionId],
+  );
   return { receipts, clear: clearReceipts, remove: deleteReceipt, exportJson, originalFor };
 }
