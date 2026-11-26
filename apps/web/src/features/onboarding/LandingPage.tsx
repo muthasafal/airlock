@@ -32,7 +32,9 @@ export default function LandingPage(): React.JSX.Element {
       {/* Hero section */}
       <section className="landing-hero">
         <div className="landing-hero-content">
-          <h1 className="landing-hero-title">Your secrets stay on this side of the door</h1>
+          <h1 className="landing-hero-title">
+            Your secrets stay <span className="hl-blue">on this side of the door</span>
+          </h1>
           <p className="landing-hero-subtitle">
             Use any cloud AI without leaking confidential data. Sensitive details are detected and replaced before anything leaves your device.
           </p>
@@ -44,6 +46,7 @@ export default function LandingPage(): React.JSX.Element {
               Or clean text in clipboard
             </Link>
           </div>
+          <p className="aside-note">nothing leaves until it's clean</p>
         </div>
 
         <div className="landing-hero-chamber">

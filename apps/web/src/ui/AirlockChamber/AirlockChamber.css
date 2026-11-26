@@ -1,50 +1,207 @@
-.airlock-chamber-svg {
+/* The airlock chamber. Ink body, blue doors, blue words in, green stand-ins out. */
+
+.chamber {
+  margin: 0;
   width: 100%;
-  height: 100%;
-  max-width: 320px;
-  max-height: 240px;
+  max-width: 400px;
+  display: grid;
+  gap: 0.5rem;
 }
 
+.chamber-svg {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.chamber-caption {
+  text-align: center;
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: var(--ink);
+  min-height: 2.6em;
+}
+
+/* ---------- Static parts ---------- */
+.chamber-body {
+  fill: var(--ink);
+  filter: drop-shadow(0 14px 18px rgba(11, 21, 48, 0.28));
+}
+.chamber-room { fill: #13224a; }
+.chamber-floor { stroke: #2a3d6e; stroke-width: 2; stroke-linecap: round; }
+.ink-stroke { fill: #ffffff; stroke: var(--ink); stroke-width: 3; }
+.ink-fill { fill: var(--ink); }
+.device-screen { fill: var(--sky-pale); }
+.cloud-shape { fill: #ffffff; stroke: var(--ink); stroke-width: 3; stroke-linejoin: round; }
+.chamber-label {
+  font-family: var(--font-accent);
+  font-size: 15px;
+  fill: var(--ink-soft);
+  text-anchor: middle;
+}
+
+.door-panel { fill: var(--blue-bright); stroke: #93b4f5; stroke-width: 1.5; }
+.door-seam { stroke: #ffffff; stroke-opacity: 0.55; stroke-width: 2; stroke-linecap: round; }
+.lamp-stem { stroke: var(--ink); stroke-width: 3; }
+.lamp { fill: var(--green-bright); stroke: var(--ink); stroke-width: 3; transform-box: fill-box; transform-origin: center; }
+
+/* ---------- Chips ---------- */
+.chip-original { fill: #7fb0ff; }
+.chip-secret { fill: #ffffff; }
+.chip-standin { fill: var(--green-bright); }
+.chip-text {
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-size: 12px;
+  fill: var(--ink);
+  text-anchor: middle;
+}
+.chip-text--small { font-size: 11px; }
+
+.chip-face {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.chip-back { transform: scaleX(0); }
+.chip-front.is-hidden { transform: scaleX(0); }
+.chip-back.is-shown { transform: scaleX(1); }
+
+/* ---------- Moving parts ---------- */
+.door {
+  transition: transform 0.55s var(--easing-out-expo);
+}
+.door.is-open { transform: translateY(-122px); }
+
+.mist { fill: #ffffff; opacity: 0; }
+.parcel { opacity: 0; }
+
+/* Scrubbing: mist sweeps, words flip blue to green and back, lamp breathes blue */
+.chamber--scrubbing .mist {
+  animation: chamber-mist 1.6s ease-in-out infinite;
+}
+.chamber--scrubbing .chip-front {
+  animation: chip-out 2.4s var(--easing-out-expo) infinite;
+}
+.chamber--scrubbing .chip-back {
+  animation: chip-in 2.4s var(--easing-out-expo) infinite;
+}
+.chamber--scrubbing .lamp,
+.chamber--sending .lamp,
+.chamber--restoring .lamp {
+  fill: var(--sky);
+}
+.chamber--scrubbing .lamp {
+  animation: lamp-breathe 1.2s ease-in-out infinite;
+}
+
+/* Sending: the cleaned parcel drifts out to the cloud */
+.chamber--sending .parcel {
+  animation: parcel-out 1.8s var(--easing-out-expo) infinite;
+}
+.chamber--sending .chamber-cloud {
+  animation: cloud-bob 1.8s ease-in-out infinite;
+}
+
+/* Restoring: the parcel comes back, stand-ins flip back to blue */
+.chamber--restoring .parcel {
+  animation: parcel-in 1.8s var(--easing-out-expo) infinite;
+}
+.chamber--restoring .chip-back {
+  animation: chip-out 2.4s var(--easing-out-expo) infinite;
+}
+.chamber--restoring .chip-front {
+  animation: chip-in 2.4s var(--easing-out-expo) infinite;
+}
+
+/* Local: everything stays inside, lamp steady green */
+.chamber--local .chamber-room { fill: #10314a; }
+
+/* Blocked: red lamp, doors shut, the secret chip glows red */
+.chamber--blocked .lamp {
+  fill: #ef4444;
+  animation: lamp-breathe 1s ease-in-out infinite;
+}
+.chamber--blocked .chip-secret { fill: #fecaca; }
+
+@keyframes chamber-mist {
+  0% { transform: translateX(0); opacity: 0; }
+  20% { opacity: 0.22; }
+  80% { opacity: 0.22; }
+  100% { transform: translateX(260px); opacity: 0; }
+}
+@keyframes chip-out {
+  0%, 28% { transform: scaleX(1); }
+  42%, 88% { transform: scaleX(0); }
+  100% { transform: scaleX(1); }
+}
+@keyframes chip-in {
+  0%, 42% { transform: scaleX(0); }
+  56%, 84% { transform: scaleX(1); }
+  96%, 100% { transform: scaleX(0); }
+}
+@keyframes lamp-breathe {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.25); opacity: 0.75; }
+}
+@keyframes parcel-out {
+  0% { transform: translateX(0); opacity: 0; }
+  15% { opacity: 1; }
+  75% { opacity: 1; }
+  100% { transform: translateX(92px); opacity: 0; }
+}
+@keyframes parcel-in {
+  0% { transform: translateX(92px); opacity: 0; }
+  25% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { transform: translateX(-130px); opacity: 0; }
+}
+@keyframes cloud-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+/* ---------- Reduced motion: a static step diagram ---------- */
 .static-chamber-diagram {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-6);
-  padding: var(--space-6);
-  background: white;
-  border-radius: var(--radius-2xl);
-  box-shadow: var(--shadow-md);
+  margin: 0;
+  display: grid;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: var(--ink);
+  border-radius: 26px;
+  color: #ffffff;
 }
-
+.static-chamber-diagram .chamber-caption { color: #ffffff; }
 .chamber-steps {
-  display: flex;
-  justify-content: space-between;
-  gap: var(--space-4);
-  flex-wrap: wrap;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
 }
-
 .chamber-step {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-3);
-  flex: 1;
-  min-width: 80px;
+  display: grid;
+  justify-items: center;
+  gap: 0.4rem;
+  text-align: center;
 }
-
 .chamber-step-icon {
-  font-size: var(--font-size-3xl);
+  display: grid;
+  place-items: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 999px;
+  background: #24365c;
+  color: #ffffff;
+  font-weight: 800;
 }
-
+.chamber-step.is-active .chamber-step-icon {
+  background: var(--green-bright);
+  color: var(--ink);
+}
 .chamber-step-label {
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-semibold);
-  text-align: center;
-  color: var(--color-slate-600);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #c9d6f2;
 }
-
-.chamber-status-label {
-  text-align: center;
-  font-size: var(--font-size-sm);
-  color: var(--color-slate-500);
-  font-style: italic;
-}
+.chamber-step.is-active .chamber-step-label { color: #ffffff; }

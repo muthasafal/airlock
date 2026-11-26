@@ -21,11 +21,19 @@ Rounded, warm and joyful. Never corporate. Light mode only.
 
 Pick a deliberate palette with a tinted ink on a pale ground. NOT beige or cream.
 
-Example direction: cool pale mint or sky background with deep ink.
+Chosen palette (2026-11-26 re-skin, three colours only; tokens in `apps/web/src/ui/tokens.css`, shared overrides in `ui/punch.css`):
 
-- One action color (buttons, links)
-- One success color (confirmations, restored text highlights)
-- Semantic colors for categories (subtle, not alarming)
+| Role | Hex | Use |
+|---|---|---|
+| Ink | `#0b1530` | Text, and dark bands: the airlock chamber, "What was sent", the footer, active nav |
+| Working blue | `#1d4ed8` (bright `#2563eb`, deep `#1e3a8a`) | The only action colour: buttons, links, focus, chamber doors, sensitive words |
+| Green | `#16a34a` (bright `#22c55e`, mint `#dcfce7`) | Safe: stand-ins, restored answers, "protection ready", the Enable button |
+| Mist / paper | `#f2f7ff` / `#ffffff` | Page ground (with faint blue and green washes) / cards |
+| Red | `#dc2626` | Blocked state and destructive actions only |
+
+- No purple, pink or amber accents. Category highlights stay in the blue and green family.
+- White text only on ink, working blue or green-deep fills (all pass AA).
+- In the chamber, sensitive words are blue chips with ink text, and they flip to green stand-in chips.
 
 ## Shape and spacing
 

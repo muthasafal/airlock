@@ -1,0 +1,406 @@
+/*
+ * Airlock re-skin (safaldev): more contrast and a little more life, three colours only.
+ *   ink  #0b1530  text, dark bands, the chamber
+ *   blue #1d4ed8  the one action colour (buttons, links, focus)
+ *   green #16a34a / #22c55e  safe: stand-ins, restored answers, success
+ * Loaded after every component stylesheet, so these shared rules win. Layout and logic are untouched.
+ */
+
+/* ---------- Type ---------- */
+h1, h2, h3 {
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+.hl-blue { color: var(--blue); }
+.hl-green { color: var(--green-deep); }
+
+.aside-note {
+  font-family: var(--font-accent);
+  font-size: 1.45rem;
+  line-height: 1.2;
+  color: var(--green-deep);
+  display: inline-block;
+  transform: rotate(-2deg);
+}
+
+/* ---------- Header and nav ---------- */
+.app-header {
+  background: rgba(255, 255, 255, 0.92);
+  border-bottom: 1px solid var(--line);
+  box-shadow: 0 8px 24px -18px rgba(11, 21, 48, 0.35);
+}
+
+.app-logo-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--green-bright);
+  font-size: 1.05rem;
+}
+
+.app-nav-link {
+  color: var(--ink-soft);
+  font-weight: 700;
+  border-radius: 999px;
+}
+
+.app-nav-link:hover {
+  background: var(--sky-pale);
+  color: var(--blue);
+}
+
+.app-nav-link.active,
+.app-nav-link[aria-current='page'] {
+  background: var(--ink);
+  color: #ffffff;
+}
+
+.app-settings-link {
+  color: var(--ink);
+  font-weight: 700;
+  border: 2px solid var(--line);
+  border-radius: 999px;
+}
+
+/* ---------- Buttons: pills with a soft glow, a 2px lift and a crisp press ---------- */
+.composer-submit-button,
+.clipboard-button,
+.bench-run-button,
+.create-join-submit,
+.create-join-button,
+.enable-nano-button,
+.landing-hero-button,
+.settings-action-button {
+  min-height: 48px;
+  padding: 0.7rem 1.5rem;
+  border-radius: 999px;
+  background: var(--blue);
+  color: #ffffff;
+  font-weight: 800;
+  border: 2px solid var(--blue);
+  box-shadow: var(--shadow-tint);
+  transition:
+    transform var(--duration-fast) var(--easing-out-expo),
+    box-shadow var(--duration-fast) var(--easing-out-expo),
+    background-color var(--duration-fast) var(--easing-out-expo);
+}
+
+.composer-submit-button:hover:not(:disabled),
+.clipboard-button:hover:not(:disabled),
+.bench-run-button:hover:not(:disabled),
+.create-join-submit:hover:not(:disabled),
+.create-join-button:hover:not(:disabled),
+.enable-nano-button:hover:not(:disabled),
+.landing-hero-button:hover,
+.settings-action-button:hover {
+  background: var(--blue-deep);
+  border-color: var(--blue-deep);
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 18px 34px -12px rgba(29, 78, 216, 0.6);
+}
+
+.composer-submit-button:active:not(:disabled),
+.clipboard-button:active:not(:disabled),
+.landing-hero-button:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* The safe, positive action: green */
+.enable-nano-button {
+  background: var(--green);
+  border-color: var(--green);
+  box-shadow: var(--shadow-green);
+}
+.enable-nano-button:hover:not(:disabled) {
+  background: var(--green-deep);
+  border-color: var(--green-deep);
+  box-shadow: 0 18px 34px -12px rgba(22, 163, 74, 0.6);
+}
+
+/* Secondary: white pill with an ink outline */
+.landing-hero-button--secondary,
+.create-join-cancel,
+.receipt-view-action-button,
+.chat-forget-button {
+  min-height: 44px;
+  padding: 0.6rem 1.25rem;
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--ink);
+  font-weight: 800;
+  border: 2px solid var(--ink);
+  box-shadow: none;
+}
+.landing-hero-button--secondary:hover,
+.create-join-cancel:hover,
+.receipt-view-action-button:hover,
+.chat-forget-button:hover {
+  background: var(--ink);
+  color: #ffffff;
+  border-color: var(--ink);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.settings-action-button--danger {
+  background: #ffffff;
+  color: var(--color-red-700);
+  border-color: var(--color-red-600);
+  box-shadow: none;
+}
+.settings-action-button--danger:hover {
+  background: var(--color-red-700);
+  border-color: var(--color-red-700);
+  color: #ffffff;
+}
+
+/* ---------- Fields ---------- */
+input, textarea, select {
+  border-color: var(--line);
+  background: #ffffff;
+  color: var(--ink);
+}
+textarea::placeholder, input::placeholder {
+  color: #6b7a96;
+}
+input:focus-visible, textarea:focus-visible, select:focus-visible {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.18);
+}
+
+/* ---------- Cards: paper on mist, crisper edge, ink-tinted shadow ---------- */
+.composer,
+.turn,
+.chat-chamber-wrapper,
+.receipt-view,
+.receipts-list,
+.clipboard-step,
+.settings-section,
+.org-tabs-container,
+.create-join,
+.bench-container,
+.landing-step,
+.stats-dashboard {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-md);
+}
+
+/* ---------- Chat ---------- */
+.chat-title {
+  font-size: clamp(2rem, 3.4vw, 2.6rem);
+}
+
+.chat-chamber-wrapper {
+  border-radius: 30px;
+  padding: 1rem;
+}
+
+.composer-preview {
+  border: 2px dashed var(--blue);
+  background: #f5f8ff;
+  border-radius: 18px;
+}
+.composer-preview-label {
+  color: var(--blue-deep);
+  font-weight: 800;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.composer-preview-text mark {
+  background: var(--sky-pale);
+  color: var(--ink);
+  border-bottom: 2px solid var(--blue);
+  border-radius: 6px;
+  padding: 0 3px;
+}
+
+.turn {
+  border-left: 0;
+  border-top: 6px solid var(--blue);
+  border-radius: 28px;
+}
+
+.turn-section-title {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 1rem;
+  color: var(--ink);
+}
+
+.turn-section-content {
+  color: var(--ink);
+  border-radius: 18px;
+}
+
+.turn-original {
+  background: #f5f8ff;
+  border: 1px solid var(--line);
+}
+.turn-original mark,
+.turn-original .restored-span-highlight {
+  background: var(--sky-pale);
+  color: var(--ink);
+  border-bottom: 2px solid var(--blue);
+  border-radius: 6px;
+  padding: 0 3px;
+}
+
+/* What left the device: an ink panel, the clearest contrast on the page */
+.turn-scrubbed {
+  background: var(--ink);
+  color: #e8efff;
+  border: 0;
+  font-family: var(--font-body);
+}
+
+/* The answer: safe and back home, in green */
+.turn-answer {
+  background: var(--mint);
+  border: 2px solid var(--green-bright);
+  color: var(--ink);
+}
+
+.restored-span-highlight {
+  background: #a7efc0;
+  color: var(--ink);
+  border-radius: 6px;
+  padding: 0 3px;
+}
+
+/* ---------- Status panel ---------- */
+.protection-status {
+  border-radius: 26px;
+  border: 2px solid var(--line);
+  box-shadow: var(--shadow-md);
+  background: #ffffff;
+}
+.protection-status--full {
+  border-color: var(--green-bright);
+  background: linear-gradient(180deg, #f2fdf6, #ffffff);
+}
+.protection-status--full .protection-status-icon {
+  background: var(--green);
+  color: #ffffff;
+}
+.protection-status--reduced {
+  border-color: var(--blue);
+}
+.protection-status--reduced .protection-status-icon {
+  background: var(--blue);
+  color: #ffffff;
+}
+.protection-status--unavailable .protection-status-icon {
+  background: var(--ink);
+  color: #ffffff;
+}
+.protection-status-icon {
+  width: 2.4rem;
+  height: 2.4rem;
+  min-width: 2.4rem;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+.protection-status-title {
+  color: var(--ink);
+  font-weight: 800;
+}
+.protection-status-description,
+.protection-status-info {
+  color: var(--ink-soft);
+}
+.protection-status-progress {
+  background: var(--green);
+}
+
+/* ---------- Landing ---------- */
+.landing-hero-title {
+  font-size: clamp(2.6rem, 6vw, 4.6rem);
+  line-height: 1.02;
+  font-weight: 800;
+}
+.landing-step-icon {
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--green-bright);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.4rem;
+}
+.landing-step {
+  border-radius: 28px;
+}
+.landing-learn-link {
+  color: var(--blue);
+  font-weight: 800;
+}
+
+/* ---------- Receipts and bench ---------- */
+.receipt-item.active {
+  background: var(--ink);
+  color: #ffffff;
+}
+.receipt-view-payload-text {
+  border-radius: 18px;
+}
+.receipt-view-payload h3 + .receipt-view-payload-text {
+  background: #f5f8ff;
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+.receipt-view-payload h3:last-of-type + .receipt-view-payload-text {
+  background: var(--ink);
+  color: #e8efff;
+}
+.bench-results th {
+  background: var(--ink);
+  color: #ffffff;
+}
+
+/* ---------- Footer: a dark ink band ---------- */
+.app-footer {
+  background: var(--ink);
+  color: #c9d6f2;
+  border-top: 0;
+  border-radius: 40px 40px 0 0;
+  margin-top: 4rem;
+}
+.app-footer h2,
+.app-footer h3,
+.app-footer h4,
+.app-footer strong {
+  color: #ffffff;
+}
+.app-footer p,
+.app-footer-credit {
+  color: #c9d6f2;
+}
+.app-footer a,
+.app-footer-links a,
+.app-footer-credit a {
+  color: #86efac;
+}
+.app-footer a:hover {
+  color: #ffffff;
+}
+
+/* ---------- Chamber sizing ---------- */
+.landing-hero-chamber .chamber {
+  max-width: 500px;
+  margin-inline: auto;
+}
+.chat-chamber-wrapper .chamber {
+  max-width: 100%;
+}

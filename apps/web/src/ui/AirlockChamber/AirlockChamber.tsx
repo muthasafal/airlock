@@ -1,237 +1,158 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { useReducedMotion } from 'framer-motion';
-import { EASING } from '../../lib/motion';
 import './AirlockChamber.css';
 
-export type ChamberState =
-  | 'idle'
-  | 'scrubbing'
-  | 'sending'
-  | 'local'
-  | 'blocked'
-  | 'restoring';
+export type ChamberState = 'idle' | 'scrubbing' | 'sending' | 'local' | 'blocked' | 'restoring';
 
 interface AirlockChamberProps {
   state: ChamberState;
-  progress?: number; // 0-1 for scrubbing/sending animations
+  progress?: number; // kept for API compatibility
 }
+
+/** One plain sentence per state, shown under the chamber and announced to screen readers. */
+const CHAMBER_CAPTION: Record<ChamberState, string> = {
+  idle: 'Both doors shut. Ready when you are.',
+  scrubbing: 'Inner door open. Swapping sensitive words, on your device.',
+  sending: 'Outer door open. Only stand-ins head to the cloud.',
+  local: 'Answered right here. The outer door never opened.',
+  blocked: 'Door held shut. A secret stayed on this side.',
+  restoring: 'The answer is back. Putting your real details in.',
+};
+
+/** Words that flip: what you wrote (blue) and the stand-in that leaves (green). */
+const CHIPS = [
+  { x: 84, w: 54, original: 'Priya', standIn: 'Maya' },
+  { x: 144, w: 76, original: 'Acme Corp', standIn: 'Northwind' },
+  { x: 226, w: 52, original: 'sk-ant…', standIn: '‹secret›' },
+];
 
 /**
- * Animated two-door airlock chamber showing the scrubbing process.
- * BRIEF §8 and design language §signature element.
- *
- * States:
- * - idle: both doors closed, waiting
- * - scrubbing: inner door open, mist sweeps, words flip colored by category
- * - sending: outer door opens, cleaned message drifts toward cloud
- * - local: outer door stays closed ("stayed on your device")
- * - blocked: gentle red lamp pulses, doors stay shut
- * - restoring: reverse animation
- *
- * In reduced-motion mode: static step diagram with text labels.
+ * The airlock chamber, Airlock's signature (BRIEF §10.3). A dark ink chamber between your
+ * device and the cloud. Sensitive words (blue) flip into stand-ins (green) inside it; the
+ * outer door opens only for CLOUD_SCRUBBED; LOCAL_ANSWER keeps it shut; BLOCK lights a red
+ * lamp. Pure SVG + CSS keyframes on transform and opacity. Under reduced motion it becomes a
+ * static four-step diagram with the same caption.
  */
 export default function AirlockChamber({ state }: AirlockChamberProps): React.JSX.Element {
-  const shouldReduceMotion = useReducedMotion();
+  const reduce = useReducedMotion();
+  if (reduce) return <StaticChamberDiagram state={state} />;
 
-  if (shouldReduceMotion) {
-    return <StaticChamberDiagram state={state} />;
-  }
+  const innerOpen = state === 'scrubbing';
+  const outerOpen = state === 'sending' || state === 'restoring';
+  const showStandIns = state === 'sending' || state === 'local' || state === 'restoring';
 
-  return <AnimatedChamber state={state} />;
-}
-
-function AnimatedChamber({ state }: { state: ChamberState }): React.JSX.Element {
   return (
-    <svg
-      className="airlock-chamber-svg"
-      viewBox="0 0 320 240"
-      xmlns="http://www.w3.org/2000/svg"
-      role="img"
-      aria-label={`Airlock chamber: ${state}`}
-    >
-      {/* Chamber body */}
-      <rect
-        x="20"
-        y="40"
-        width="280"
-        height="140"
-        fill="var(--color-sky-50)"
-        stroke="var(--color-slate-300)"
-        strokeWidth="2"
-        rx="12"
-      />
+    <figure className={`chamber chamber--${state}`}>
+      <svg className="chamber-svg" viewBox="0 0 360 230" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <clipPath id="chamber-inner-frame">
+            <rect x="60" y="44" width="22" height="128" />
+          </clipPath>
+          <clipPath id="chamber-outer-frame">
+            <rect x="282" y="44" width="22" height="128" />
+          </clipPath>
+          <clipPath id="chamber-room">
+            <rect x="82" y="44" width="200" height="128" />
+          </clipPath>
+        </defs>
 
-      {/* Inner door (device side, left) */}
-      <motion.g
-        animate={{
-          rotateZ: state === 'idle' || state === 'blocked' ? 0 : state === 'scrubbing' || state === 'restoring' ? -70 : 0,
-        }}
-        transition={{ duration: 0.4, ease: EASING }}
-        style={{ transformOrigin: '30px 110px' }}
-      >
-        <rect
-          x="20"
-          y="40"
-          width="20"
-          height="140"
-          fill="var(--color-sky-300)"
-          stroke="var(--color-slate-400)"
-          strokeWidth="1.5"
-          rx="4"
-        />
-        <line x1="30" y1="55" x2="30" y2="165" stroke="var(--color-slate-500)" strokeWidth="0.5" opacity="0.6" />
-      </motion.g>
+        {/* Your device: a small laptop */}
+        <g className="chamber-device">
+          <rect x="6" y="88" width="40" height="28" rx="5" className="ink-stroke" />
+          <rect x="11" y="93" width="30" height="18" rx="2" className="device-screen" />
+          <path d="M2 120 h48 l-4 6 h-40 z" className="ink-fill" />
+          <text x="26" y="146" className="chamber-label">you</text>
+        </g>
 
-      {/* Outer door (cloud side, right) */}
-      <motion.g
-        animate={{
-          rotateZ:
-            state === 'idle' || state === 'blocked' || state === 'local' || state === 'scrubbing' ? 0 : 70,
-        }}
-        transition={{ duration: 0.4, ease: EASING, delay: state === 'sending' ? 0.2 : 0 }}
-        style={{ transformOrigin: '290px 110px' }}
-      >
-        <rect
-          x="280"
-          y="40"
-          width="20"
-          height="140"
-          fill="var(--color-sky-300)"
-          stroke="var(--color-slate-400)"
-          strokeWidth="1.5"
-          rx="4"
-        />
-        <line x1="290" y1="55" x2="290" y2="165" stroke="var(--color-slate-500)" strokeWidth="0.5" opacity="0.6" />
-      </motion.g>
+        {/* The cloud */}
+        <g className="chamber-cloud">
+          <path
+            d="M318 118 a14 14 0 0 1 2 -27.8 a17 17 0 0 1 31 6.5 a11 11 0 0 1 -1 21.3 z"
+            className="cloud-shape"
+          />
+          <text x="334" y="146" className="chamber-label">cloud</text>
+        </g>
 
-      {/* Mist animation (scrubbing) */}
-      {state === 'scrubbing' && (
-        <motion.g
-          animate={{ x: [-40, 40, -40], opacity: [0.2, 0.5, 0.2] }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-        >
-          <ellipse cx="160" cy="110" rx="60" ry="45" fill="var(--color-sky-400)" />
-        </motion.g>
-      )}
+        {/* Chamber body */}
+        <rect x="54" y="38" width="256" height="140" rx="24" className="chamber-body" />
+        <rect x="82" y="44" width="200" height="128" rx="6" className="chamber-room" />
+        <line x1="88" y1="160" x2="276" y2="160" className="chamber-floor" />
 
-      {/* Word chips (scrubbing state) */}
-      {state === 'scrubbing' && (
-        <>
-          <motion.g
-            animate={{ rotateY: [0, 180, 360] }}
-            transition={{ duration: 0.7, ease: EASING, repeat: Infinity, repeatDelay: 0.1 }}
-            style={{ transformOrigin: '100px 110px' }}
-          >
-            <rect
-              x="85"
-              y="100"
-              width="30"
-              height="20"
-              rx="6"
-              fill="var(--color-category-person)"
-              opacity="0.9"
-            />
-            <text x="100" y="114" fontSize="10" fontWeight="600" fill="white" textAnchor="middle">
-              Priya
-            </text>
-          </motion.g>
+        {/* Status lamp */}
+        <line x1="182" y1="22" x2="182" y2="38" className="lamp-stem" />
+        <circle cx="182" cy="18" r="8" className="lamp" />
 
-          <motion.g
-            animate={{ rotateY: [0, 180, 360] }}
-            transition={{ duration: 0.7, ease: EASING, repeat: Infinity, repeatDelay: 0.3 }}
-            style={{ transformOrigin: '160px 110px' }}
-          >
-            <rect
-              x="145"
-              y="100"
-              width="30"
-              height="20"
-              rx="6"
-              fill="var(--color-category-org)"
-              opacity="0.9"
-            />
-            <text x="160" y="114" fontSize="10" fontWeight="600" fill="white" textAnchor="middle">
-              Acme
-            </text>
-          </motion.g>
+        {/* Mist sweep while scrubbing */}
+        <g clipPath="url(#chamber-room)">
+          <rect x="40" y="44" width="70" height="128" className="mist" />
+        </g>
 
-          <motion.g
-            animate={{ rotateY: [0, 180, 360] }}
-            transition={{ duration: 0.7, ease: EASING, repeat: Infinity, repeatDelay: 0.5 }}
-            style={{ transformOrigin: '220px 110px' }}
-          >
-            <rect
-              x="205"
-              y="100"
-              width="30"
-              height="20"
-              rx="6"
-              fill="var(--color-category-credential)"
-              opacity="0.9"
-            />
-            <text x="220" y="114" fontSize="9" fontWeight="600" fill="white" textAnchor="middle">
-              key...
-            </text>
-          </motion.g>
-        </>
-      )}
+        {/* Word chips */}
+        {CHIPS.map((c, i) => (
+          <g key={c.original} className="chip" style={{ animationDelay: `${i * 0.22}s` }}>
+            <g className={`chip-face chip-front ${showStandIns ? 'is-hidden' : ''}`} style={{ animationDelay: `${i * 0.22}s` }}>
+              <rect x={c.x} y={86} width={c.w} height={28} rx={14} className={i === 2 ? 'chip-secret' : 'chip-original'} />
+              <text x={c.x + c.w / 2} y={104.5} className="chip-text">
+                {c.original}
+              </text>
+            </g>
+            <g className={`chip-face chip-back ${showStandIns ? 'is-shown' : ''}`} style={{ animationDelay: `${i * 0.22}s` }}>
+              <rect x={c.x} y={86} width={c.w} height={28} rx={14} className="chip-standin" />
+              <text x={c.x + c.w / 2} y={104.5} className="chip-text">
+                {c.standIn}
+              </text>
+            </g>
+          </g>
+        ))}
 
-      {/* Cloud (sending state) */}
-      {state === 'sending' && (
-        <motion.g
-          animate={{ x: [0, 50, 0], opacity: [0.5, 1, 0.5] }}
-          transition={{ duration: 2, ease: 'easeInOut', repeat: Infinity }}
-        >
-          <ellipse cx="310" cy="50" rx="22" ry="15" fill="var(--color-sky-200)" opacity="0.8" />
-          <ellipse cx="335" cy="45" rx="25" ry="18" fill="var(--color-sky-200)" opacity="0.8" />
-        </motion.g>
-      )}
+        {/* The cleaned message travelling to the cloud and back */}
+        <g className="parcel">
+          <rect x="226" y="128" width="58" height="22" rx="11" className="chip-standin" />
+          <text x="255" y="143" className="chip-text chip-text--small">
+            cleaned
+          </text>
+        </g>
 
-      {/* Red lamp (blocked state) */}
-      {state === 'blocked' && (
-        <motion.circle
-          cx="160"
-          cy="110"
-          r="16"
-          fill="var(--color-red-500)"
-          animate={{ opacity: [0.4, 1, 0.4] }}
-          transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' }}
-        />
-      )}
-
-      {/* Status text */}
-      <text x="160" y="210" fontSize="11" fontWeight="600" textAnchor="middle" fill="var(--color-slate-700)">
-        {state === 'idle' && 'Ready'}
-        {state === 'scrubbing' && 'Scrubbing...'}
-        {state === 'sending' && 'Sending'}
-        {state === 'local' && 'On your device'}
-        {state === 'blocked' && 'Blocked'}
-        {state === 'restoring' && 'Restoring...'}
-      </text>
-    </svg>
+        {/* Doors slide up into the wall */}
+        <g clipPath="url(#chamber-inner-frame)">
+          <g className={`door door-inner ${innerOpen ? 'is-open' : ''}`}>
+            <rect x="60" y="44" width="22" height="128" rx="5" className="door-panel" />
+            <line x1="71" y1="58" x2="71" y2="158" className="door-seam" />
+          </g>
+        </g>
+        <g clipPath="url(#chamber-outer-frame)">
+          <g className={`door door-outer ${outerOpen ? 'is-open' : ''}`}>
+            <rect x="282" y="44" width="22" height="128" rx="5" className="door-panel" />
+            <line x1="293" y1="58" x2="293" y2="158" className="door-seam" />
+          </g>
+        </g>
+      </svg>
+      <figcaption className="chamber-caption" role="status" aria-live="polite">
+        {CHAMBER_CAPTION[state]}
+      </figcaption>
+    </figure>
   );
 }
 
-function StaticChamberDiagram({ state }: { state: ChamberState }): React.JSX.Element {
-  const steps = [
-    { label: 'Your message', icon: '1' },
-    { label: 'Scrubbed', icon: '2' },
-    { label: 'On-device or cloud', icon: '3' },
-    { label: 'Answer restored', icon: '4' },
-  ];
+const STEPS = ['You write', 'Cleaned on your device', 'Answered here or in the cloud', 'Real details restored'];
+const ACTIVE_STEP: Record<ChamberState, number> = { idle: 0, scrubbing: 1, sending: 2, local: 2, blocked: 2, restoring: 3 };
 
+function StaticChamberDiagram({ state }: { state: ChamberState }): React.JSX.Element {
   return (
-    <div className="static-chamber-diagram">
-      <div className="chamber-steps">
-        {steps.map((step, i) => (
-          <div key={i} className="chamber-step">
-            <div className="chamber-step-icon">{step.icon}</div>
-            <div className="chamber-step-label">{step.label}</div>
-          </div>
+    <figure className="static-chamber-diagram">
+      <ol className="chamber-steps">
+        {STEPS.map((label, i) => (
+          <li key={label} className={`chamber-step ${i === ACTIVE_STEP[state] ? 'is-active' : ''}`}>
+            <span className="chamber-step-icon" aria-hidden="true">
+              {i + 1}
+            </span>
+            <span className="chamber-step-label">{label}</span>
+          </li>
         ))}
-      </div>
-      <div className="chamber-status-label">{state}</div>
-    </div>
+      </ol>
+      <figcaption className="chamber-caption" role="status" aria-live="polite">
+        {CHAMBER_CAPTION[state]}
+      </figcaption>
+    </figure>
   );
 }

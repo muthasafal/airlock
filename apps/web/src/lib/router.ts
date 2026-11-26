@@ -18,6 +18,8 @@ export interface RouterInput {
   /** Findings whose action is BLOCK (their values were replaced with ‹secret-N›). */
   blockedCount: number;
   nanoAvailable: boolean;
+  /** Set when Nano exists but did not finish for this message (rules only ran). */
+  reducedBecause?: string;
   consentGiven: boolean;
   classification: TaskClassification | null;
   userOverride?: RouteOverride;
@@ -66,7 +68,7 @@ export function decideRoute(i: RouterInput): RouterDecision {
     return {
       route: 'BLOCK',
       needsConsent: true,
-      reason: "This browser can't run the private model, so we only used our rule checks. Turn on reduced protection to send the cleaned text.",
+      reason: `${i.reducedBecause ?? "This browser can't run the private model"}, so we only used our rule checks. Turn on reduced protection to send the cleaned text.`,
     };
   }
 

@@ -51,7 +51,7 @@ export default function ChatPage(): React.JSX.Element {
               previewSegments={preview}
             />
             {session.turns.length > 0 && (
-              <button type="button" className="route-picker-select" onClick={session.forgetSession}>
+              <button type="button" className="chat-forget-button" onClick={session.forgetSession}>
                 Forget this session
               </button>
             )}

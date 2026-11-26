@@ -3,55 +3,78 @@
 @import '@fontsource/caveat';
 
 :root {
-  /* Color palette: cool pale sky with deep slate ink */
-  --color-sky-50: #f0f9ff;
-  --color-sky-100: #e0f2fe;
-  --color-sky-200: #bae6fd;
-  --color-sky-300: #7dd3fc;
-  --color-sky-400: #38bdf8;
-  --color-sky-500: #0ea5e9;
-  --color-sky-600: #0284c7;
-  --color-sky-700: #0369a1;
-  --color-sky-900: #0c2d6b;
+  /*
+   * Palette: ink, working blue and meadow green on a pale mist ground (safaldev "Ink, sky and meadow").
+   * Blue is the only "this does something" colour. Green means safe: stand-ins, restored, it worked.
+   * Ink is the near-black for text and for dark bands such as the airlock chamber.
+   * Legacy names below (sky / slate / emerald) are kept and re-pointed so every component follows.
+   */
+  --ink: #0b1530;
+  --ink-soft: #24365c;
+  --ink-muted: #4d5f80;
+  --blue: #1d4ed8;
+  --blue-bright: #2563eb;
+  --blue-deep: #1e3a8a;
+  --sky: #38bdf8;
+  --sky-pale: #dbeafe;
+  --green: #16a34a;
+  --green-deep: #15803d;
+  --green-bright: #22c55e;
+  --mint: #dcfce7;
+  --mist: #f2f7ff;
+  --paper: #ffffff;
+  --line: #d3ddef;
 
-  --color-slate-50: #f8fafc;
-  --color-slate-100: #f1f5f9;
-  --color-slate-200: #e2e8f0;
-  --color-slate-300: #cbd5e1;
-  --color-slate-400: #94a3b8;
-  --color-slate-500: #64748b;
-  --color-slate-600: #475569;
-  --color-slate-700: #334155;
-  --color-slate-800: #1e293b;
-  --color-slate-900: #0f172a;
+  --color-sky-50: var(--mist);
+  --color-sky-100: #e3edff;
+  --color-sky-200: #bfd3fb;
+  --color-sky-300: #93b4f5;
+  --color-sky-400: var(--sky);
+  --color-sky-500: var(--blue-bright);
+  --color-sky-600: var(--blue);
+  --color-sky-700: var(--blue-deep);
+  --color-sky-900: var(--ink);
 
-  --color-emerald-100: #d1fae5;
-  --color-emerald-200: #a7f3d0;
-  --color-emerald-500: #10b981;
-  --color-emerald-600: #059669;
+  --color-slate-50: #f7faff;
+  --color-slate-100: #edf2fb;
+  --color-slate-200: var(--line);
+  --color-slate-300: #b9c6dd;
+  --color-slate-400: #8090ad;
+  --color-slate-500: var(--ink-muted);
+  --color-slate-600: #34476d;
+  --color-slate-700: var(--ink-soft);
+  --color-slate-800: #142246;
+  --color-slate-900: var(--ink);
 
-  --color-amber-50: #fffbeb;
-  --color-amber-100: #fef3c7;
-  --color-amber-500: #f59e0b;
+  --color-emerald-100: var(--mint);
+  --color-emerald-200: #a7efc0;
+  --color-emerald-500: var(--green-bright);
+  --color-emerald-600: var(--green);
+
+  --color-amber-50: #fff8eb;
+  --color-amber-100: #fdecc8;
+  --color-amber-500: #d97706;
 
   --color-red-100: #fee2e2;
   --color-red-200: #fecaca;
   --color-red-500: #ef4444;
   --color-red-600: #dc2626;
+  --color-red-700: #b91c1c;
+  --color-red-800: #991b1b;
 
-  --color-purple-100: #f3e8ff;
-  --color-purple-500: #a855f7;
-
-  --color-pink-100: #fce7f3;
-  --color-pink-500: #ec4899;
+  /* No purple or pink in this system: these map into blue and green. */
+  --color-purple-100: var(--sky-pale);
+  --color-purple-500: var(--blue-bright);
+  --color-pink-100: var(--sky-pale);
+  --color-pink-500: var(--blue-bright);
 
   /* Semantic colors */
-  --color-action: var(--color-sky-600);
-  --color-action-hover: var(--color-sky-700);
-  --color-action-light: var(--color-sky-100);
+  --color-action: var(--blue);
+  --color-action-hover: var(--blue-deep);
+  --color-action-light: #e3edff;
 
-  --color-success: var(--color-emerald-600);
-  --color-success-light: var(--color-emerald-100);
+  --color-success: var(--green-deep);
+  --color-success-light: var(--mint);
 
   --color-error: var(--color-red-600);
   --color-error-light: var(--color-red-100);
@@ -59,14 +82,14 @@
   --color-warning: var(--color-amber-500);
   --color-warning-light: var(--color-amber-50);
 
-  /* Category semantic colors (subtle) */
-  --color-category-credential: var(--color-purple-100);
-  --color-category-person: var(--color-pink-100);
-  --color-category-org: var(--color-sky-100);
-  --color-category-financial: var(--color-amber-50);
-  --color-category-health: var(--color-red-100);
-  --color-category-location: var(--color-emerald-100);
-  --color-category-document: var(--color-slate-100);
+  /* Category highlights: blue for who and where, green for money and matters, ink tint for secrets */
+  --color-category-credential: #cfd8ea;
+  --color-category-person: #c7dafe;
+  --color-category-org: #bbf3cf;
+  --color-category-financial: #bbf3cf;
+  --color-category-health: #c7dafe;
+  --color-category-location: #bbf3cf;
+  --color-category-document: #e6ecf7;
 
   /* Typography */
   --font-display: 'Baloo 2', system-ui, sans-serif;
@@ -114,14 +137,13 @@
   --radius-3xl: 3rem;
   --radius-pill: 9999px;
 
-  /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-
-  /* Tinted shadows (soft blue tint) */
-  --shadow-tint: 0 10px 25px -5px rgba(2, 132, 199, 0.15);
+  /* Shadows: soft, wide, tinted with ink (never black, never hard offset) */
+  --shadow-sm: 0 2px 6px -2px rgba(11, 21, 48, 0.12);
+  --shadow-md: 0 12px 32px -14px rgba(11, 21, 48, 0.28);
+  --shadow-lg: 0 24px 56px -22px rgba(11, 21, 48, 0.34);
+  --shadow-xl: 0 36px 80px -30px rgba(11, 21, 48, 0.4);
+  --shadow-tint: 0 14px 30px -12px rgba(29, 78, 216, 0.5);
+  --shadow-green: 0 14px 30px -12px rgba(22, 163, 74, 0.45);
 
   /* Motion */
   --easing-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
@@ -144,8 +166,13 @@ body {
   font-family: var(--font-body);
   font-size: var(--font-size-base);
   line-height: var(--line-height-normal);
-  color: var(--color-slate-900);
-  background-color: var(--color-sky-50);
+  color: var(--ink);
+  background-color: var(--mist);
+  background-image:
+    radial-gradient(900px 520px at -10% -10%, rgba(37, 99, 235, 0.10), transparent 60%),
+    radial-gradient(800px 480px at 110% 0%, rgba(34, 197, 94, 0.10), transparent 60%);
+  background-attachment: fixed;
+  color-scheme: light;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -184,7 +211,7 @@ a:hover {
 }
 
 a:focus-visible {
-  outline: 2px solid var(--color-action);
+  outline: 3px solid var(--color-action);
   outline-offset: 2px;
   border-radius: var(--radius-sm);
 }
@@ -204,7 +231,7 @@ button:disabled {
 }
 
 button:focus-visible {
-  outline: 2px solid var(--color-action);
+  outline: 3px solid var(--color-action);
   outline-offset: 2px;
 }
 

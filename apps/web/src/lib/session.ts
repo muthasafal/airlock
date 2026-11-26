@@ -20,6 +20,7 @@ import {
   classifyTask,
   initializeDeviceModel,
   NanoDetector,
+  withTimeout,
   type NanoAvailability,
   type TaskClassification,
 } from '@airlock/nano-detector';
@@ -150,7 +151,27 @@ export function initSession(): Promise<void> {
 export async function refreshAvailability(): Promise<NanoAvailability> {
   const availability = isFirebaseConfigured ? await checkAvailability() : 'unavailable';
   set({ availability, protectionLevel: availability === 'available' ? 'Full' : 'Reduced' });
+  if (availability === 'available') void warmUp();
   return availability;
+}
+
+let warmed: Promise<void> | null = null;
+/**
+ * The first Gemini Nano call after Chrome loads the model is slow ("cold"). One tiny on-device
+ * detection at startup (fictional text, never sent anywhere) keeps the first real message inside
+ * the 8 s detection budget.
+ */
+function warmUp(): Promise<void> {
+  warmed ??= (async () => {
+    const models = getNanoModels();
+    if (!models) return;
+    try {
+      await new NanoDetector(models.detect, { timeoutMs: 60000 }).detect('Hello from Maya at Northwind.', { nanoMinConfidence: 0.5 });
+    } catch {
+      warmed = null;
+    }
+  })();
+  return warmed;
 }
 
 /** User gesture: triggers the Gemini Nano download through AI Logic with progress (BRIEF §P0-9). */
@@ -292,11 +313,15 @@ export async function submitMessage(text: string, override: RouteOverride = 'AUT
       classification = await classifyTask(models.classify, s.text);
       sources.classification = 'ON_DEVICE';
     }
+    // Nano exists but did not finish for this message: treat it like reduced protection, so
+    // rules-only text never goes to the cloud without consent.
+    const nanoFinished = nanoReady() && s.protection === 'Full';
     const decision = decideRoute({
       scrubbedLength: s.text.length,
       findings: s.findings,
       blockedCount: s.blocked,
-      nanoAvailable: nanoReady(),
+      nanoAvailable: nanoFinished || (nanoReady() && override === 'LOCAL_ANSWER'),
+      reducedBecause: nanoReady() && !nanoFinished ? "The private model didn't finish in time for this message" : undefined,
       consentGiven: state.consent,
       classification,
       userOverride: override,
@@ -323,9 +348,18 @@ export async function submitMessage(text: string, override: RouteOverride = 'AUT
     } else if (decision.route === 'LOCAL_ANSWER' && models) {
       set({ chamberState: 'local' });
       let answer = '';
-      const r = await answerOnDevice(models.answer, text, (chunk) => {
-        answer += chunk;
-        updateTurn(id, { answer });
+      const r = await withTimeout(
+        answerOnDevice(models.answer, text, (chunk) => {
+          answer += chunk;
+          updateTurn(id, { answer });
+        }),
+        90000,
+      ).catch((e) => {
+        throw new Error(
+          e instanceof Error && e.name === 'TimeoutError'
+            ? 'The private model took too long to answer. Nothing was sent. Try again, or choose the cloud for this message.'
+            : 'The private model could not answer this one. Nothing was sent. Try again, or choose the cloud for this message.',
+        );
       });
       sources.answer = r.inferenceSource === 'in_cloud' ? 'IN_CLOUD' : 'ON_DEVICE';
       updateTurn(id, { answer: r.text });
