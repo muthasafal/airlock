@@ -74,6 +74,8 @@ export interface SessionState {
   sessionId: string;
   availability: NanoAvailability;
   initProgress: number | null;
+  /** Chrome says Nano is available, but it did not answer the warm-up: Chrome's model service is stuck. */
+  nanoStalled: boolean;
   firebaseConfigured: boolean;
   consent: boolean;
   chamberState: ChamberState;
@@ -91,6 +93,7 @@ let state: SessionState = {
   sessionId: '',
   availability: 'unavailable',
   initProgress: null,
+  nanoStalled: false,
   firebaseConfigured: isFirebaseConfigured,
   consent: false,
   chamberState: 'idle',
@@ -118,7 +121,7 @@ export const sessionStore = {
 
 const newId = () => (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`);
 const ttlHours = () => getSettings().sessionTtlHours || getRemoteConfigValues().session_ttl_hours;
-const nanoReady = () => state.availability === 'available' && getNanoModels() !== null;
+const nanoReady = () => state.availability === 'available' && !state.nanoStalled && getNanoModels() !== null;
 
 let initPromise: Promise<void> | null = null;
 
@@ -165,11 +168,14 @@ function warmUp(): Promise<void> {
   warmed ??= (async () => {
     const models = getNanoModels();
     if (!models) return;
+    const probe = new NanoDetector(models.detect, { timeoutMs: 60000 });
     try {
-      await new NanoDetector(models.detect, { timeoutMs: 60000 }).detect('Hello from Maya at Northwind.', { nanoMinConfidence: 0.5 });
+      await probe.detect('Hello from Maya at Northwind.', { nanoMinConfidence: 0.5 });
+      set({ nanoStalled: probe.lastTimedOut, protectionLevel: probe.lastTimedOut ? 'Reduced' : 'Full' });
     } catch {
-      warmed = null;
+      set({ nanoStalled: true, protectionLevel: 'Reduced' });
     }
+    if (state.nanoStalled) warmed = null;
   })();
   return warmed;
 }

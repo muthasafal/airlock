@@ -29,6 +29,7 @@ export default function ChatPage(): React.JSX.Element {
         availability={status.availability}
         firebaseConfigured={status.firebaseConfigured}
         onEnable={status.startInit}
+            stalled={status.stalled}
         enabling={status.initProgress !== null}
         consent={session.consent}
         onConsentChange={session.setConsent}

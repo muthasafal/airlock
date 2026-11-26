@@ -95,6 +95,7 @@ export default function LandingPage(): React.JSX.Element {
             enabling={status.initProgress !== null}
             firebaseConfigured={status.firebaseConfigured}
             onEnable={status.startInit}
+            stalled={status.stalled}
           />
           <div className="landing-protection-action">
             <p className="landing-protection-text">{statusText}</p>

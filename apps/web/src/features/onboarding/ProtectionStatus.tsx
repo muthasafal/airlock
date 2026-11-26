@@ -15,6 +15,8 @@ interface ProtectionStatusProps {
   enabling?: boolean;
   consent?: boolean;
   onConsentChange?: (v: boolean) => void;
+  /** Nano is installed but not responding (Chrome's on-device model service is stuck). */
+  stalled?: boolean;
 }
 
 /**
@@ -35,6 +37,7 @@ export default function ProtectionStatus({
   enabling = false,
   consent = false,
   onConsentChange,
+  stalled = false,
 }: ProtectionStatusProps): React.JSX.Element {
   return (
     <div className={`protection-status protection-status--${level}`} role="status" aria-live="polite">
@@ -53,12 +56,16 @@ export default function ProtectionStatus({
           <div className="protection-status-icon">⚠</div>
           <div className="protection-status-text">
             <p className="protection-status-title">
-              {availability === 'downloading' || enabling
-                ? `On-device protection: downloading ${downloadProgress}%`
-                : 'On-device protection: ready to download'}
+              {stalled
+                ? "On-device protection: the private model isn't responding"
+                : availability === 'downloading' || enabling
+                  ? `On-device protection: downloading ${downloadProgress}%`
+                  : 'On-device protection: ready to download'}
             </p>
             <p className="protection-status-description">
-              Until the private model is ready we use our rule checks only, and you'll be asked before anything is sent.
+              {stalled
+                ? 'Chrome has the model but its on-device service is stuck. Quit Chrome completely (every window) and open it again. Until then we use our rule checks and ask before anything is sent.'
+                : "Until the private model is ready we use our rule checks only, and you'll be asked before anything is sent."}
             </p>
             {onEnable && !enabling && availability === 'downloadable' && <EnableNanoButton onClick={onEnable} />}
             {onConsentChange && <ConsentToggle consent={consent} onChange={onConsentChange} />}

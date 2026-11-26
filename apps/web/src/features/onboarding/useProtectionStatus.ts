@@ -10,6 +10,7 @@ export interface ProtectionStatusHook {
   level: 'full' | 'reduced' | 'unavailable';
   firebaseConfigured: boolean;
   consent: boolean;
+  stalled: boolean;
 }
 
 /**
@@ -23,7 +24,7 @@ export function useProtectionStatus(): ProtectionStatusHook {
     void initSession();
   }, []);
   const startInit = useCallback(() => void enableOnDeviceModel(), []);
-  const level = s.availability === 'available' ? 'full' : s.availability === 'unavailable' ? 'unavailable' : 'reduced';
+  const level = s.availability === 'available' && !s.nanoStalled ? 'full' : s.availability === 'unavailable' ? 'unavailable' : 'reduced';
   return {
     availability: s.availability,
     initProgress: s.initProgress,
@@ -31,5 +32,6 @@ export function useProtectionStatus(): ProtectionStatusHook {
     level,
     firebaseConfigured: s.firebaseConfigured,
     consent: s.consent,
+    stalled: s.nanoStalled,
   };
 }
