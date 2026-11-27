@@ -111,6 +111,11 @@ describe('PRIVATE_KEY', () => {
 describe('PASSWORD', () => {
   it('captures the value only', () => expect(texts(detectPassword('password: hunter2 and pin=4321'))).toEqual(['hunter2', '4321']));
   it('ignores the word on its own', () => expect(detectPassword('reset your password please')).toEqual([]));
+  it('catches OTPs, one-time codes and CVVs without trailing punctuation', () => {
+    expect(texts(detectPassword('Hi Safal here, here is the OTP: 4978, tell me what to do next!'))).toEqual(['4978']);
+    expect(texts(detectPassword('your verification code is 551203.'))).toEqual(['551203']);
+    expect(texts(detectPassword('CVV=123'))).toEqual(['123']);
+  });
 });
 
 describe('IP_ADDRESS', () => {

@@ -234,9 +234,14 @@ export function previewFindings(text: string): Finding[] {
 }
 
 /** Live preview refinement with Nano (on-device), merged with the rules. */
+/** Only one live-preview Nano call at a time, and none while a message is being sent. */
+let previewInFlight = false;
+
 export async function refinePreview(text: string): Promise<Finding[]> {
+  if (previewInFlight || state.busy) return previewFindings(text);
   const { nano } = detectors();
   if (!nano || !text.trim()) return previewFindings(text);
+  previewInFlight = true;
   try {
     const nanoFindings = await nano.detect(text, { nanoMinConfidence: getRemoteConfigValues().nano_min_confidence });
     const policy = currentPolicy();
@@ -246,6 +251,8 @@ export async function refinePreview(text: string): Promise<Finding[]> {
     );
   } catch {
     return previewFindings(text);
+  } finally {
+    previewInFlight = false;
   }
 }
 
@@ -266,6 +273,9 @@ export async function scrubForSession(text: string): Promise<ScrubOutcome> {
   });
   await persistMapping();
   const full = Boolean(nano) && !nano?.lastTimedOut && !result.failedDetectors;
+  // Nano did not answer in time: stop waiting on it for the rest of this session, so the next
+  // messages go straight to rule checks instead of hanging again. A reload tries Nano afresh.
+  if (nano && (nano.lastTimedOut || result.failedDetectors)) set({ nanoStalled: true, protectionLevel: 'Reduced' });
   return {
     text: result.text,
     findings: result.findings,
@@ -312,7 +322,7 @@ export async function submitMessage(text: string, override: RouteOverride = 'AUT
   try {
     // If the private model is still warming up, let it finish first (bounded by the wait setting).
     if (warmed && nanoReady()) {
-      await Promise.race([warmed, sleep(getSettings().nanoWaitSeconds * 1000)]);
+      await Promise.race([warmed, sleep(3000)]);
     }
     const s = await scrubForSession(text);
     const rc = getRemoteConfigValues();
