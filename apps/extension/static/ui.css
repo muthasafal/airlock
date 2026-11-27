@@ -1,0 +1,15 @@
+:root{--ink:#0b1530;--blue:#1d4ed8;--green:#16a34a;--mint:#dcfce7;--mist:#f2f7ff;--line:#d3ddef}
+*{box-sizing:border-box}
+body{margin:0;font:15px/1.5 Nunito,system-ui,sans-serif;color:var(--ink);background:var(--mist)}
+h1{font:800 1.35rem/1.1 'Baloo 2',system-ui,sans-serif;margin:0 0 .25rem}
+.card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:14px 16px;margin:12px 0;box-shadow:0 12px 30px -16px rgba(11,21,48,.35)}
+.muted{color:#4d5f80;font-size:13px}
+button{font:800 14px/1 Nunito,system-ui,sans-serif;border:2px solid var(--ink);background:#fff;color:var(--ink);border-radius:99px;padding:10px 16px;cursor:pointer;min-height:40px}
+button:hover{background:var(--ink);color:#fff}
+button:focus-visible,input:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.switch{width:44px;height:26px;accent-color:var(--green)}
+mark{background:#a7efc0;color:var(--ink);border-radius:6px;padding:0 3px}
+.out{white-space:pre-wrap;background:var(--mint);border:2px solid #22c55e;border-radius:18px;padding:12px 14px}
+.brand{display:flex;gap:8px;align-items:center}
+.logo{width:28px;height:28px;border-radius:99px;background:var(--ink);color:#22c55e;display:grid;place-items:center;font-weight:800}

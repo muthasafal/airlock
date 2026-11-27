@@ -1,0 +1,9 @@
+{
+  "name": "airlock",
+  "version": "0.1.0",
+  "description": "Keep secrets on your machine: read sensitive files cleaned, restore real details only into local files, and block prompts that contain API keys, tokens, passwords or ID numbers.",
+  "author": { "name": "Safal Mutha" },
+  "homepage": "https://github.com/muthasafal/airlock",
+  "license": "Apache-2.0",
+  "keywords": ["privacy", "redaction", "secrets", "pii", "dlp"]
+}

@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "airlock hook claude-code",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

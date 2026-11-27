@@ -1,0 +1,4 @@
+# Add to ~/.codex/config.toml
+[mcp_servers.airlock]
+command = "airlock"
+args = ["mcp"]

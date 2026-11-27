@@ -1,0 +1,28 @@
+{
+  "name": "@airlock/cli",
+  "version": "0.1.0",
+  "description": "Airlock on the command line and as an MCP server: clean secrets out of text before any AI sees it, and restore them locally.",
+  "type": "module",
+  "license": "Apache-2.0",
+  "bin": {
+    "airlock": "./dist/cli.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": ["dist"],
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@airlock/scrub-engine": "*",
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "zod": "^3.25.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.9.0",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.4"
+  }
+}

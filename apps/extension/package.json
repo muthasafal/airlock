@@ -1,0 +1,19 @@
+{
+  "name": "@airlock/extension",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Airlock for ChatGPT, Claude, Gemini and other AI chats: pasted text is cleaned on your device before the site sees it.",
+  "scripts": {
+    "build": "node build.mjs",
+    "typecheck": "tsc --noEmit -p ."
+  },
+  "dependencies": {
+    "@airlock/scrub-engine": "*"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.287",
+    "esbuild": "^0.24.0",
+    "typescript": "^5.6.3"
+  }
+}

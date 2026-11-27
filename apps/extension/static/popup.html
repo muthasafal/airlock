@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Airlock</title><link rel="stylesheet" href="ui.css">
+<style>body{width:340px;padding:14px}</style></head>
+<body>
+  <div class="brand"><span class="logo" aria-hidden="true">&#9680;</span><h1>Airlock</h1></div>
+  <p class="muted">Your secrets stay on this side of the door.</p>
+  <div class="card">
+    <div class="row"><label for="toggle"><strong>Clean pastes on <span id="site"></span></strong></label><input id="toggle" class="switch" type="checkbox"></div>
+    <p class="muted" id="site-note"></p>
+  </div>
+  <div class="card"><p id="nano" class="muted">Checking the on-device model...</p></div>
+  <div class="card">
+    <p class="muted">To see an answer with your real details, select it on the page, right-click and choose <strong>Restore with Airlock</strong>. It opens in the side panel, where only you can see it.</p>
+    <button id="forget" type="button">Forget this browser session</button>
+    <p class="muted" id="forget-note" role="status"></p>
+  </div>
+  <script src="popup.js" type="module"></script>
+</body></html>
