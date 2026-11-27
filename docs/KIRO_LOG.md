@@ -139,3 +139,13 @@ Kiro is out of monthly credits, so Claude Code implemented the following inside 
 - The README covers the AI Logic code pointers, a Mermaid architecture diagram, the tested guarantees and the setup steps.
 - 4 Playwright e2e tests pass in Chrome.
 - Copy fixes against the design rules: emoji icons replaced with step numbers, and inaccurate privacy claims corrected.
+
+## 2026-11-27 - Integrations: CLI, MCP, skill, plugins, Chrome extension (implemented with Claude Code)
+
+Kiro had no credits left (Kiro Free 50 of 50 used; resets 2026-12-01), so Claude Code wrote the `integrations` spec in Kiro's format (`.kiro/specs/integrations`, authorship stated in the file) and built it:
+- **`packages/cli`:** the `airlock` command (`scrub`, `restore`, `check`, `forget`). Sessions are encrypted with AES-256-GCM in `~/.airlock`. An optional local model through Ollama detects names and context; it refuses any non-loopback URL. Also a Claude Code `UserPromptSubmit` hook (`airlock hook claude-code`).
+- **MCP server** (`airlock mcp`) for Claude Desktop, Claude Code, Codex, Cursor and Gemini CLI. Files are read cleaned, and restored text is only written to a local file. The tool results never contain original values (property P10, tested).
+- **`integrations/`:** an Agent Skill (`SKILL.md`), a Claude Code plugin (skill, MCP, hook), Codex `config.toml` and `AGENTS.md`, and Cursor, Gemini CLI and Claude Desktop configs, with an install guide.
+- **`apps/extension`:** a Chrome MV3 extension for ChatGPT, Claude.ai, Gemini, Copilot, Perplexity and DeepSeek. Pastes are cleaned before the site's own listeners run, using Gemini Nano through the Prompt API when available. "Restore with Airlock" shows answers in the extension's side panel, never in the site's page.
+- **Tests:** 10 CLI/MCP tests (vault round trip, secret guard, no originals in tool results, path guard) and 2 Playwright tests in Edge with the real extension loaded.
+- **Left for Kiro after the reset:** tasks 8 to 10 in `.kiro/specs/integrations/tasks.md` (a leak-auditor pass, a copy-editor pass, a test hook for the CLI).
