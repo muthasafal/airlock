@@ -7,6 +7,7 @@ import { useAirlockSession } from './useAirlockSession';
 import { useLivePreview } from './useLivePreview';
 import { useProtectionStatus } from '../onboarding/useProtectionStatus';
 import { useSettings } from '../settings/useSettings';
+import GhostTip from '../../ui/Ghost/Ghost';
 import './ChatPage.css';
 
 /**
@@ -61,7 +62,10 @@ export default function ChatPage(): React.JSX.Element {
           <div className="chat-turns-section" aria-live="polite" aria-label="Chat history">
             {session.turns.length === 0 ? (
               <div className="chat-empty-state">
-                <p>No messages yet. Type something confidential and hit send.</p>
+                <GhostTip mood="wink">
+                  Nothing in the airlock yet. Paste an email you'd never forward to a stranger and press Send. I'll swap the names,
+                  numbers and keys before a single word leaves this laptop.
+                </GhostTip>
               </div>
             ) : (
               session.turns.map((turn) => (

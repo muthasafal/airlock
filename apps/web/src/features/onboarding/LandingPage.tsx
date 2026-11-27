@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import AirlockChamber from '../../ui/AirlockChamber/AirlockChamber';
 import ProtectionStatus from './ProtectionStatus';
 import { useProtectionStatus } from './useProtectionStatus';
+import GhostTip from '../../ui/Ghost/Ghost';
 import type { ChamberState } from '../../ui/AirlockChamber';
 import './LandingPage.css';
 
@@ -36,7 +37,12 @@ export default function LandingPage(): React.JSX.Element {
             Your secrets stay <span className="hl-blue">on this side of the door</span>
           </h1>
           <p className="landing-hero-subtitle">
-            Use any cloud AI without leaking confidential data. Sensitive details are detected and replaced before anything leaves your device.
+            Paste anything into AI. A private model on your laptop swaps the names, numbers and keys for realistic stand-ins, only
+            the clean version goes to the cloud, and your real details come back in the answer.
+          </p>
+          <p className="landing-hero-who">
+            For anyone who handles other people's details: HR teams, lawyers, doctors, teachers, NGO volunteers, and developers with
+            keys in their logs.
           </p>
           <div className="landing-hero-cta">
             <Link to="/chat" className="landing-hero-button">
@@ -51,7 +57,36 @@ export default function LandingPage(): React.JSX.Element {
 
         <div className="landing-hero-chamber">
           <AirlockChamber state={SAMPLE_CYCLE[step]} progress={50} />
+          <GhostTip mood="wink">
+            Hi, I'm Airy. I guard the door, so the cloud only ever meets your stand-ins.
+          </GhostTip>
         </div>
+      </section>
+
+      {/* Scare me, then make it easy: what the cloud actually sees */}
+      <section className="landing-sees" aria-labelledby="sees-title">
+        <h2 id="sees-title" className="landing-section-title">
+          What the cloud <span className="hl-blue">actually sees</span>
+        </h2>
+        <div className="landing-sees-grid">
+          <figure className="sees-card sees-card--without">
+            <figcaption>Without Airlock: every word, exactly as you typed it</figcaption>
+            <p>
+              Tell <mark>Priya Shah</mark> (<mark>priya.shah@acme.com</mark>) her <mark>₹4,52,317</mark> bonus is approved.
+              Deploy key: <mark>sk-ant-api03-9fQx…</mark>
+            </p>
+          </figure>
+          <figure className="sees-card sees-card--with">
+            <figcaption>With Airlock: realistic stand-ins, and the secret never leaves</figcaption>
+            <p>
+              Tell <mark>Maya Iyer</mark> (<mark>maya.iyer@northwind.example</mark>) her <mark>about ₹4.5 lakh</mark> bonus is
+              approved. Deploy key: <mark>‹secret-1›</mark>
+            </p>
+          </figure>
+        </div>
+        <p className="landing-sees-note">
+          The answer comes back about Maya, and Airlock turns her back into Priya on your laptop. All example data is made up.
+        </p>
       </section>
 
       {/* How it works */}

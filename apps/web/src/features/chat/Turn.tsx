@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Finding } from '@airlock/scrub-engine';
 import RestoredSpan from './RestoredSpan';
+import GhostTip from '../../ui/Ghost/Ghost';
 import { toSegments } from './useLivePreview';
 import type { RouteDecision } from '../../lib/router';
 import './Turn.css';
@@ -97,21 +98,37 @@ export default function Turn({
 
       <div className="turn-section">
         <h3 className="turn-section-title">{route ? ROUTE_LABEL[route] : 'Working on it'}</h3>
-        {reason && <p className="turn-section-content">{reason}</p>}
+        {reason && !canSendWithoutSecret && !needsConsent && <p className="turn-section-content">{reason}</p>}
         {withheldSecrets > 0 && route !== 'BLOCK' && (
           <p className="turn-section-content">
             We held back {withheldSecrets} secret{withheldSecrets === 1 ? '' : 's'}. The rest went through.
           </p>
         )}
         {canSendWithoutSecret && onSendWithoutSecret && (
-          <button type="button" className="composer-submit-button" onClick={onSendWithoutSecret}>
-            Send without the secret
-          </button>
+          <GhostTip
+            mood="boo"
+            compact
+            action={
+              <button type="button" className="composer-submit-button" onClick={onSendWithoutSecret}>
+                Send without the secret
+              </button>
+            }
+          >
+            Boo! That looked like a secret, so I kept it on this side of the door. Send without it and the cloud only sees{' '}
+            <code>‹secret-1›</code>.
+          </GhostTip>
         )}
         {needsConsent && (
-          <p className="turn-section-content">Turn on reduced protection above, then send again.</p>
+          <GhostTip mood="sleepy" compact>
+            I could only do the quick rule checks this time, and names may still be in there. Tick "Send rule-cleaned text" in the
+            panel at the top if you're happy, then send again.
+          </GhostTip>
         )}
-        {error && <p className="turn-section-content">{error}</p>}
+        {error && (
+          <GhostTip mood="lost" compact>
+            Something spooked me. {error}
+          </GhostTip>
+        )}
         {(status === 'answering' || status === 'done') && (
           <div className="turn-section-content turn-answer" role="status" aria-live="polite">
             {answerParts}

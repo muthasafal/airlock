@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { EASING, DURATION_NORMAL } from '../../lib/motion';
 import EnableNanoButton from './EnableNanoButton';
+import GhostTip from '../../ui/Ghost/Ghost';
 import './ProtectionStatus.css';
 
 export type ProtectionLevel = 'full' | 'reduced' | 'unavailable';
@@ -64,9 +65,14 @@ export default function ProtectionStatus({
             </p>
             <p className="protection-status-description">
               {stalled
-                ? 'Chrome has the model but its on-device service is stuck. Quit Chrome completely (every window) and open it again. Until then we use our rule checks and ask before anything is sent.'
+                ? 'Until then we use our rule checks and ask before anything is sent.'
                 : "Until the private model is ready we use our rule checks only, and you'll be asked before anything is sent."}
             </p>
+            {stalled && (
+              <GhostTip mood="sleepy" compact>
+                Chrome's private model has dozed off. Quit Chrome completely (every window), open it again, and I'll wake it up.
+              </GhostTip>
+            )}
             {onEnable && !enabling && availability === 'downloadable' && <EnableNanoButton onClick={onEnable} />}
             {onConsentChange && <ConsentToggle consent={consent} onChange={onConsentChange} />}
           </div>

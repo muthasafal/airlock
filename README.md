@@ -6,6 +6,19 @@ Airlock puts a private model on your own device (Gemini Nano in Chrome, through 
 
 > Built with Kiro; reviewed with Claude Code. See [docs/KIRO_LOG.md](docs/KIRO_LOG.md) for exactly who wrote what.
 
+**Built with:** Kiro, Firebase AI Logic (hybrid inference), Gemini Nano, Gemini API, Firebase App Check, Remote Config, Auth, Firestore, Hosting, React 19, TypeScript, Vite, fast-check, Vitest, Playwright, Claude Code.
+
+**Kiro at a glance** (everything is in [`/.kiro`](.kiro)):
+
+| Kiro feature | What it did here |
+|---|---|
+| [Steering](.kiro/steering) | product, tech, structure, design, and `privacy-invariants.md`, which every change is checked against |
+| [Specs](.kiro/specs) | `architecture-skeleton` (every file of the app as typed, wired stubs) and `scrub-engine` (EARS requirements and 9 correctness properties) |
+| Property-based testing | the 9 properties run 1,000 times each with fast-check; one shrank to a real card-number leak, which was then fixed |
+| [Hooks](.kiro/hooks) | a secret guard that runs Airlock's own detector on every prompt sent to Kiro, plus test-on-save, PBT after each task, a privacy review on agent stop, and docs sync |
+| [Custom agents](.kiro/agents) | `leak-auditor` (hunts for data-egress paths) and `copy-editor` (voice rules) |
+| [MCP](.kiro/settings/mcp.json) | Firebase, Playwright and GitHub servers, with no tokens in the file |
+
 ## Why
 
 People paste client names, salaries, medical notes, contracts and API keys into chatbots every day. Companies either ban AI, so people use it anyway on personal devices, or they buy cloud DLP. Cloud DLP checks your prompt by sending it to yet another company first. Plain `[REDACTED]` masking breaks the model's reasoning.

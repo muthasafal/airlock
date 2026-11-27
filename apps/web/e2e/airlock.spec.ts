@@ -15,7 +15,7 @@ test('chat: reduced protection shows the live preview and holds back without con
   await page.getByRole('button', { name: 'Send' }).click();
   const turn = page.locator('.turn').first();
   await expect(turn).toContainText('Held back');
-  await expect(turn).toContainText(/Turn on reduced protection/i);
+  await expect(turn).toContainText(/Send rule-cleaned text/i);
   await expect(turn.locator('.turn-scrubbed')).not.toContainText('priya.shah@acme.com');
   await expect(turn.locator('.turn-scrubbed')).toContainText('.example');
 });

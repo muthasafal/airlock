@@ -81,7 +81,13 @@ export default function AppShell({ children }: AppShellProps): React.JSX.Element
           </div>
 
           <div className="app-footer-credit">
-            <p>Built with <a href="https://kiro.dev" target="_blank" rel="noopener noreferrer">Kiro</a>; reviewed with Claude Code.</p>
+            <p>
+              Built with <a href="https://kiro.dev" target="_blank" rel="noopener noreferrer">Kiro</a> (specs, hooks, steering, property tests) and{' '}
+              Firebase AI Logic; reviewed with Claude Code.{' '}
+              <a href="https://github.com/muthasafal/airlock" target="_blank" rel="noopener noreferrer">
+                Open source on GitHub
+              </a>
+            </p>
           </div>
         </div>
       </footer>

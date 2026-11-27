@@ -81,6 +81,40 @@ export default function HowItWorksPage(): React.JSX.Element {
           Session mappings are encrypted in IndexedDB with non-extractable AES-GCM keys. No mapping, original value or key ever touches the network.
         </p>
       </section>
+
+      <section className="kiro-built" aria-labelledby="kiro-title">
+        <h2 id="kiro-title">How we built it with Kiro</h2>
+        <p>
+          Airlock was built spec first in Kiro. Everything below lives in the <code>/.kiro</code> folder of the{' '}
+          <a href="https://github.com/muthasafal/airlock/tree/main/.kiro" target="_blank" rel="noopener noreferrer">
+            public repo
+          </a>
+          .
+        </p>
+        <ul>
+          <li>
+            <strong>Steering:</strong> product, tech, structure, design and a privacy-invariants doc that every change is
+            checked against.
+          </li>
+          <li>
+            <strong>Specs:</strong> an architecture-skeleton spec that laid out every file of the app as typed stubs, and a
+            scrub-engine spec with EARS requirements and nine correctness properties.
+          </li>
+          <li>
+            <strong>Property-based tests:</strong> those nine properties run 1,000 times each. One of them caught a real leak (a card
+            number partly hidden behind an Aadhaar match) before it ever shipped.
+          </li>
+          <li>
+            <strong>Hooks:</strong> a secret guard that runs Airlock's own detector on every prompt sent to Kiro, plus test-on-save,
+            property tests after each task, a privacy review when the agent stops, and docs sync.
+          </li>
+          <li>
+            <strong>Custom agents and MCP:</strong> a leak-auditor and a copy-editor, and Firebase, Playwright and GitHub MCP
+            servers.
+          </li>
+        </ul>
+        <p>Reviewed with Claude Code. The build log, including who wrote what, is in docs/KIRO_LOG.md.</p>
+      </section>
     </div>
   );
 }

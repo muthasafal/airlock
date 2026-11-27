@@ -16,6 +16,7 @@ import HowItWorksPage from './features/onboarding/HowItWorksPage';
 import PrivacyPage from './features/onboarding/PrivacyPage';
 import TermsPage from './features/onboarding/TermsPage';
 import SettingsPage from './features/settings/SettingsPage';
+import NotFoundPage from './features/onboarding/NotFoundPage';
 
 /**
  * Main app routing. BRIEF §10.1 routes.
@@ -37,6 +38,7 @@ function App(): React.JSX.Element {
             <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="/terms" element={<TermsPage />} />
             <Route path="/settings" element={<SettingsPage />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </Suspense>
       </AppShell>

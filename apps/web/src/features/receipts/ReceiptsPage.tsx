@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import ReceiptView from './ReceiptView';
+import GhostTip from '../../ui/Ghost/Ghost';
 import { useReceipts } from './useReceipts';
 import './ReceiptsPage.css';
 
@@ -34,7 +35,11 @@ export default function ReceiptsPage(): React.JSX.Element {
       <div className="receipts-container">
         <div className="receipts-list">
           {receipts.length === 0 ? (
-            <p className="receipts-empty">No receipts yet. Send a message in Airlock Chat and one appears here.</p>
+            <div className="receipts-empty">
+              <GhostTip mood="calm" compact>
+                Nothing has left your device yet, so there is nothing to show. Send a message in Airlock Chat and its receipt lands here.
+              </GhostTip>
+            </div>
           ) : (
             receipts.map((receipt) => {
               const findings = Object.values(receipt.categoryCounts).reduce((a, b) => a + (b ?? 0), 0);

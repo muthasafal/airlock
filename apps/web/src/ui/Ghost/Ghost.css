@@ -1,0 +1,65 @@
+/* Airy the ghost: white body, ink outline, green cheeks. One gentle float, off under reduced motion. */
+
+.ghost {
+  flex: none;
+  overflow: visible;
+  animation: ghost-float 3.2s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+.ghost-body { fill: #ffffff; stroke: var(--ink); stroke-width: 3; stroke-linejoin: round; }
+.ghost-eye { fill: var(--ink); }
+.ghost-line { fill: none; stroke: var(--ink); stroke-width: 2.6; stroke-linecap: round; }
+.ghost-cheek { fill: #86efac; }
+.ghost-z { font-family: var(--font-accent); font-size: 14px; fill: var(--blue); }
+
+.ghost--boo { animation: ghost-boo 0.6s var(--easing-out-expo) 1, ghost-float 3.2s ease-in-out 0.6s infinite; }
+.ghost--sleepy { animation-duration: 5s; }
+
+@keyframes ghost-float {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-5px) rotate(2deg); }
+}
+@keyframes ghost-boo {
+  0% { transform: scale(0.6) translateY(8px); }
+  60% { transform: scale(1.12) translateY(-4px); }
+  100% { transform: scale(1) translateY(0); }
+}
+
+.ghost-tip {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.75rem;
+}
+
+.ghost-bubble {
+  position: relative;
+  background: #ffffff;
+  border: 2px solid var(--ink);
+  border-radius: 22px 22px 22px 6px;
+  padding: 0.85rem 1.1rem;
+  color: var(--ink);
+  box-shadow: var(--shadow-md);
+  max-width: 34rem;
+}
+.ghost-bubble-text {
+  font-weight: 700;
+  line-height: 1.45;
+}
+.ghost-bubble-action {
+  margin-top: 0.7rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.ghost-tip--boo .ghost-bubble { border-color: var(--color-red-600); }
+.ghost-tip--sleepy .ghost-bubble { border-color: var(--blue); }
+
+.ghost-tip--compact .ghost-bubble {
+  padding: 0.65rem 0.9rem;
+  font-size: 0.95rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ghost, .ghost--boo { animation: none; }
+}
