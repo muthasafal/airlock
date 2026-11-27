@@ -42,6 +42,7 @@ Airlock makes **the device the trust boundary**: detection, pseudonymisation and
 - **Org mode** (`/org`): admins set protected terms and policies, which members apply on-device. Stats are counts only; Firestore rules reject content.
 - **Leak benchmark** (`/bench`): seeded synthetic documents with planted secrets, comparing no protection, rules only, and rules + Nano, in your own Chrome.
 - **Graceful degradation**: without Nano, Airlock uses its rule checks only, says protection is reduced, and asks for consent before any cloud call.
+- **Airlock everywhere**: a Chrome extension for ChatGPT, Claude.ai, Gemini and more, an `airlock` CLI and MCP server, an Agent Skill, and plugins for Claude Code and Codex. See [integrations/README.md](integrations/README.md).
 
 ## How Firebase AI Logic is used
 
