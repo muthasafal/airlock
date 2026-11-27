@@ -1,0 +1,12 @@
+{
+  "name": "airlock",
+  "owner": { "name": "Safal Mutha" },
+  "metadata": { "description": "Airlock: keep secrets on your machine when you use AI." },
+  "plugins": [
+    {
+      "name": "airlock",
+      "source": "./claude-code",
+      "description": "Read sensitive files cleaned, restore real details only into local files, and block prompts that contain secrets."
+    }
+  ]
+}

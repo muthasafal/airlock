@@ -53,11 +53,14 @@ The model never receives your original values: it reads files cleaned and writes
 
 ## Claude Code
 
-Install the plugin from this repo (it bundles the skill, the MCP server config and a `UserPromptSubmit` secret guard):
+Install the plugin from this repo (it bundles the skill, the MCP server config and a `UserPromptSubmit` secret guard). Run from the repo root:
 
 ```
-claude plugin install ./integrations/claude-code
+claude plugin marketplace add ./integrations
+claude plugin install airlock@airlock
 ```
+
+Inside Claude Code the same steps are `/plugin marketplace add ./integrations` and `/plugin install airlock@airlock`. The `airlock` command must be on your PATH first (see [Command line](#command-line)).
 
 Or add the pieces by hand:
 - MCP: `claude mcp add airlock -- airlock mcp`

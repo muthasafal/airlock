@@ -119,7 +119,39 @@ Requirements: Node 22+, and Chrome desktop 139+ for on-device protection.
 3. In Chrome, open `chrome://flags/#prompt-api-for-gemini-nano-multimodal-input`, set it to **Enabled**, and restart. Airlock shows "On-device protection: ready" once Nano is available, or an **Enable** button that downloads it.
 4. `npm run dev`, then open http://localhost:5173
 
-Checks: `npm run typecheck`, `npm run lint`, `npm run test:unit`, `npm run test:props`, `npm run test:rules` (needs Java for the emulator) and `npm run build`.
+Checks:
+- `npm run typecheck`, `npm run lint` and `npm run build`
+- `npm run test:unit` and `npm run test:props`
+- `npm run test:rules` (needs Java for the emulator)
+- `npm run test:integrations` (CLI and MCP tests, plus the extension tests, which run in Microsoft Edge)
+
+## Use Airlock in other tools
+
+The same engine runs outside the web app. Build everything once from the repo root:
+
+```
+npm install
+npm run build
+```
+
+**ChatGPT, Claude.ai, Gemini, Copilot, Perplexity or DeepSeek in Chrome (extension)**
+1. Open `chrome://extensions`, turn on **Developer mode**, click **Load unpacked** and choose `apps/extension/dist`.
+2. Paste into the site's message box as usual. Airlock swaps sensitive details before the site sees them, and a small notice shows what changed (with **Undo**).
+3. To read an answer with your real details, select it, right-click and choose **Restore with Airlock**. It opens in the side panel, never inside the website.
+
+**Terminal (any AI tool)**
+1. Run `npm link -w packages/cli` once. That puts `airlock` on your PATH.
+2. Clean a file and paste the cleaned text into any AI: `airlock scrub notes.txt --session acme > clean.txt`
+3. Put the real details back into the AI's answer: `airlock restore answer.txt --session acme > final.txt`
+4. Check for secrets: `airlock check .env` exits with code 2 if it finds a key, token, password or ID number.
+
+**Claude Code**: run `claude plugin marketplace add ./integrations`, then `claude plugin install airlock@airlock`. This adds the skill, the MCP tools and a hook that blocks prompts containing secrets.
+
+**Codex, Cursor, Gemini CLI, Claude Desktop**: add the MCP config from `integrations/<tool>/`. For Codex, also add the `AGENTS.md` rules.
+
+**Claude apps (Skills)**: zip `integrations/skill/airlock` and upload it under Settings, then Capabilities, then Skills.
+
+The full guide, including what each MCP tool returns and why ChatGPT's own apps need the extension, is in [integrations/README.md](integrations/README.md).
 
 Stand-in phone numbers, cards, Aadhaar and PAN numbers are deliberately fake (they fail their checksums, or use reserved ranges and domains). All test and demo data in this repo is fictional.
 
@@ -129,6 +161,8 @@ Kiro was used for steering, the architecture-skeleton spec, the frontend, and th
 - Hooks: the secret guard on prompt submit, test-on-save, PBT after each task, a privacy review on agent stop, and docs sync.
 - Agents: `leak-auditor` and `copy-editor`.
 - MCP: Firebase, Playwright and GitHub.
+
+The `integrations` spec (`.kiro/specs/integrations`) was written by Claude Code in Kiro's format while Kiro had no credits. Its last three tasks are left for Kiro.
 
 The full log, including what Claude Code implemented after Kiro's credits ran out, is in [docs/KIRO_LOG.md](docs/KIRO_LOG.md).
 

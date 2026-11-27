@@ -153,3 +153,72 @@ You need:
 - the description, built from the README sections "Why", "Features" and "How Firebase AI Logic is used".
 
 Ask Claude to draft the description text if you want it.
+
+---
+
+# Part 2: use Airlock in your other AI tools (optional, about 15 minutes)
+
+These don't need Firebase. Do them in any order.
+
+## Step 15. Build everything once (3 min)
+
+In a terminal in the `airlock` folder, run:
+
+```
+npm install
+npm run build
+```
+
+It's done when the last line says `built in ...` with no red errors.
+
+## Step 16. Install the Chrome extension, for ChatGPT, Claude.ai, Gemini and more (3 min)
+
+1. In Chrome, open `chrome://extensions`.
+2. Turn on **Developer mode** with the switch at the top right.
+3. Click **Load unpacked** and choose the folder `airlock\apps\extension\dist`.
+4. Click the puzzle-piece icon in Chrome's toolbar and pin **Airlock**.
+5. **Check it works.** Open https://chatgpt.com (or claude.ai), click in the message box and paste this fictional line:
+   `Email priya.shah@acme.com, key sk-ant-abcdefghijklmnopqrstuv1234`
+   - The box should show a different email ending in `.example`, plus `‹secret-1›`.
+   - A dark notice should appear at the bottom right.
+   - Don't send it. Just delete the line.
+6. **Restore an answer.** After the AI replies to something you pasted, select its answer, right-click, and choose **Restore with Airlock**. The side panel opens with your real details. The website never sees them.
+7. Click the Airlock icon to turn it off for a site, or to forget everything from this browser session.
+
+If you change the extension's code later, run `npm run build -w apps/extension` again, then click the reload arrow on Airlock's card in `chrome://extensions`.
+
+## Step 17. Add the `airlock` command (2 min)
+
+1. In the `airlock` folder, run `npm link -w packages/cli`.
+2. Run `airlock --help`. You should see the usage text.
+3. **Try it** (fictional data). Run:
+   `echo "Call Priya on 98200 12345" | airlock scrub --session test`
+   The phone number comes back as a fake one ending in `0000` and a digit.
+4. Run `airlock forget --session test` to clean up.
+
+If `airlock` isn't found, close and reopen the terminal.
+
+## Step 18. Add Airlock to Claude Code (2 min)
+
+1. Do Step 17 first (the plugin uses the `airlock` command).
+2. In a terminal in the `airlock` folder, run these two commands:
+   `claude plugin marketplace add ./integrations`
+   `claude plugin install airlock@airlock`
+   Then restart Claude Code.
+3. **Check it works.** In Claude Code, type a fictional prompt with a key in it, such as `my key is sk-ant-abcdefghijklmnopqrstuv1234`. Claude Code should refuse to send it, with "Airlock stopped this: it contains 1 secret (api key)".
+4. Now ask Claude Code to "read notes.txt with Airlock". It uses `airlock_read_clean`, so it only ever sees stand-ins.
+
+## Step 19. Add Airlock to Codex, Cursor, Gemini CLI or Claude Desktop (3 min each)
+
+Each tool reads its own config file. Copy the matching block in:
+- **Codex:** open `~/.codex/config.toml` (create it if missing) and paste the contents of `integrations/codex/config.toml`. Then paste `integrations/codex/AGENTS.md` into your project's `AGENTS.md`.
+- **Cursor:** paste `integrations/cursor/mcp.json` into `.cursor/mcp.json` in your project.
+- **Gemini CLI:** merge `integrations/gemini-cli/settings.json` into `~/.gemini/settings.json`.
+- **Claude Desktop:** merge `integrations/claude-desktop/claude_desktop_config.json` into `%APPDATA%\Claude\claude_desktop_config.json`, then fully quit and reopen Claude Desktop.
+
+Then restart the tool. It should list the Airlock tools: `airlock_read_clean`, `airlock_clean_text`, `airlock_restore_to_file`, `airlock_check` and `airlock_forget`.
+
+## Step 20. Add the skill to the Claude apps (2 min)
+
+1. Right-click the folder `integrations\skill\airlock`, then **Send to**, then **Compressed (zipped) folder**.
+2. In Claude (web or desktop), open **Settings**, then **Capabilities**, then **Skills**, upload the zip, and switch it on.
